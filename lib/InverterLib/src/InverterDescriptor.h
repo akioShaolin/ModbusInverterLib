@@ -24,6 +24,7 @@ struct InverterDescriptor {
     InverterPhaseType phaseType;
     InverterTopology topology;
     InverterGridConnection gridConnection;
+    uint8_t stringCount; // Número de strings, relevante para inversores do tipo STRING, MICRO, pode ser 0 para outros tipos
 };
 
 #endif

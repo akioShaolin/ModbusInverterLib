@@ -6,14 +6,7 @@
 
 #define MAX_STRINGS 20
 
-enum ModbusDataType {
-    U16,
-    I16,
-    U32,
-    I32,
-    FLOAT32,
-    ASCII
-};
+
 
 enum NaNValue {
     NAN_U16 = 0xFFFF,
@@ -33,9 +26,34 @@ struct Datetime {
     uint8_t second;
 };
 
+enum ModbusDataType {
+    U16,        // Unsigned 16-bit integer
+    I16,        // Signed 16-bit integer
+    U32,        // Unsigned 32-bit integer
+    I32,        // Signed 32-bit integer
+    FLOAT32,    // 32-bit floating point
+    ASCII       // String ASCII (cada registrador de 16 bits representa 2 caracteres ASCII)
+};
+
+// address - endereço do primeiro registrador do primeiro elemento
+
+// type - tipo de dado (U16, I16, U32, I32, FLOAT32, ASCII)
+
+// length - quantidade de elementos (valores) do campo
+// Ex.: 3 FLOAT32 = 3 elementos (cada um com 2 registradores)
+
+// stride - distância, em regs, entre o inicio de um elemento e o próximo
+// Ex: 
+//   - Dados contínuos: stride = registradores por elemento
+//   - Dados intercalados: stride > registradores por elemento
+
+// scale - fator de escala para converter o valor lido do Modbus para a unidade correta (exceto ASCII)
+
 struct ModbusField {
-    uint16_t reg;
+    uint16_t address;
     ModbusDataType type;
+    uint16_t length; // Número de registradores (16 bits cada)
+    uint16_t stride; // Número de registradores entre os campos (para arrays)
     float scale;
     bool read;
     bool write;
@@ -54,6 +72,7 @@ struct ModbusInverterMap {
     ModbusField setExportLimit;
     ModbusField enablePowerFactor;
     ModbusField setPowerFactor;
+    ModbusField powerFactorExcitationMode;
 
     // Tempo
     ModbusField time_year;
@@ -87,24 +106,24 @@ struct ModbusInverterMap {
     ModbusField insulationResistance;
     ModbusField operationStatus;
 
-    ModbusField batteryVoltage;
-    ModbusField batteryCurrent;
-    ModbusField batteryPower;
-    ModbusField batteryCharge;
-
-    ModbusField epsVoltageR;
-    ModbusField epsVoltageS;
-    ModbusField epsVoltageT;
-
-    ModbusField epsCurrentR;
-    ModbusField epsCurrentS;
-    ModbusField epsCurrentT;
-    ModbusField epsActivePower;
-    
     ModbusField stringVoltage;
     ModbusField stringCurrent;
     ModbusField stringPower;
 
+    //ModbusField batteryVoltage;
+    //ModbusField batteryCurrent;
+    //ModbusField batteryPower;
+    //ModbusField batteryCharge;
+
+    //ModbusField epsVoltageR;
+    //ModbusField epsVoltageS;
+    //ModbusField epsVoltageT;
+
+    //ModbusField epsCurrentR;
+    //ModbusField epsCurrentS;
+    //ModbusField epsCurrentT;
+    //ModbusField epsActivePower;
+    
 };
 
 const ModbusInverterMap* getInverterMap(InverterModel model);
