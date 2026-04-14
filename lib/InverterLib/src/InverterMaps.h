@@ -4,10 +4,6 @@
 #include <Arduino.h>
 #include "InverterModels.h"
 
-#define MAX_STRINGS 20
-
-
-
 enum NaNValue {
     NAN_U16 = 0xFFFF,
     NAN_I16 = 0x8000,
@@ -27,10 +23,13 @@ struct Datetime {
 };
 
 enum ModbusDataType {
+    NONE,       // Tipo especial para indicar que o campo não é aplicável ou não disponível
     U16,        // Unsigned 16-bit integer
     I16,        // Signed 16-bit integer
     U32,        // Unsigned 32-bit integer
     I32,        // Signed 32-bit integer
+    U64,        // Unsigned 64-bit integer
+    I64,        // Signed 64-bit integer
     FLOAT32,    // 32-bit floating point
     ASCII       // String ASCII (cada registrador de 16 bits representa 2 caracteres ASCII)
 };
@@ -59,6 +58,8 @@ struct ModbusField {
     bool write;
 };
 
+constexpr ModbusField INVALID_FIELD = { 0xFFFF, NONE, 0, 0, 1.0f, false, false };
+
 struct ModbusInverterMap {
     // Identificação
     ModbusField serial;
@@ -70,6 +71,7 @@ struct ModbusInverterMap {
     ModbusField setPowerLimitPercent;
     ModbusField enableExportLimit;
     ModbusField setExportLimit;
+    ModbusField setExportLimitPercent;
     ModbusField enablePowerFactor;
     ModbusField setPowerFactor;
     ModbusField powerFactorExcitationMode;
@@ -84,120 +86,38 @@ struct ModbusInverterMap {
     ModbusField time_epoch;
 
     // Status
+    ModbusField totalEnergy;
+    ModbusField dailyEnergy;
+
     ModbusField activePower;
     ModbusField reactivePower;
     ModbusField apparentPower;
     ModbusField powerFactor;
 
-    ModbusField totalEnergy;
-    ModbusField dailyEnergy;
-
-    ModbusField gridVoltageR;
-    ModbusField gridVoltageS;
-    ModbusField gridVoltageT;
-
-    ModbusField gridCurrentR;
-    ModbusField gridCurrentS;
-    ModbusField gridCurrentT;
-
+    ModbusField gridVoltage;
+    ModbusField gridCurrent;
     ModbusField gridFrequency;
 
     ModbusField temperature;
     ModbusField insulationResistance;
-    ModbusField operationStatus;
+    ModbusField inverterStatus;
+    ModbusField alarm;
 
     ModbusField stringVoltage;
     ModbusField stringCurrent;
     ModbusField stringPower;
 
-    //ModbusField batteryVoltage;
-    //ModbusField batteryCurrent;
-    //ModbusField batteryPower;
-    //ModbusField batteryCharge;
+    ModbusField batteryVoltage;
+    ModbusField batteryCurrent;
+    ModbusField batteryPower;
+    ModbusField batteryCharge;
 
-    //ModbusField epsVoltageR;
-    //ModbusField epsVoltageS;
-    //ModbusField epsVoltageT;
-
-    //ModbusField epsCurrentR;
-    //ModbusField epsCurrentS;
-    //ModbusField epsCurrentT;
-    //ModbusField epsActivePower;
+    ModbusField epsVoltage;
+    ModbusField epsCurrent;
+    ModbusField epsActivePower;
     
 };
 
 const ModbusInverterMap* getInverterMap(InverterModel model);
 
 #endif
-
-/*
-
-    Parametros de Identificação
-    - Fabricante
-    - Modelo
-    - Numero de Strings
-    - Numero de MPPTs
-    - Monofasico/Trifasico
-    - Tipo de inversor: Ongrid/Hibrido/Offgrid
-
-    Parametros do Modbus
-    - Endereço Modbus
-    - Baudrate
-    - Paridade
-    - Stopbits
-
-    Status
-    - Numero de Serie
-    - Tensão R    
-    - Corrente R
-    - Frequencia R
-    - Potencia R
-    - Tensão S    
-    - Corrente S
-    - Potencia S
-    - Tensão T    
-    - Corrente T
-    - Potencia T
-    - Fator de Potencia
-    - Potencia Ativa
-    - Potencia Reativa
-    - Energia Total Gerada
-    - Energia Gerada Hoje
-    - Temperatura
-    - Resistencia de Isolamento
-    - Status de Operação []
-
-    - Tensão de Bateria []
-    - Corrente de Bateria []
-    - Potencia de Bateria []
-    - Carga da Bateria []
-
-    - EPS Tensão R
-    - EPS Tensão S
-    - EPS Tensão T
-    - EPS Corrente R
-    - EPS Corrente S
-    - EPS Corrente T
-    - EPS Potencia Ativa
-    
-    - Tensão String   []
-    - Corrente String []
-    - Potencia String []
-
-    Configurações
-    - Boot/Shutdown
-    - Tempo de Antilhamento
-    - Enable/Disable Limite de potência    
-    - Limite de Potencia
-    - Limite de Potencia %
-    - Enable/Disable Exportação de potência
-    - Limite de Exportação de Potencia
-    - Limite de Importacao de Potencia
-    - Enable/Disable Fator de Potencia
-    - Setpoint de Fator de Potencia
-    - Enable/Disable Potencia Reativa
-    - Limite de Potencia Reativa
-    - Escrita de Registrador
-    - Leitura de Registrador
-
-*/
