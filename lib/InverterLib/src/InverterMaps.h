@@ -22,6 +22,8 @@ struct Datetime {
     uint8_t second;
 };
 
+// Perfil básico de campos Modbus para inversores, com campos comuns a vários modelos. Campos não aplicáveis ou não disponíveis em um modelo específico devem ser preenchidos com INVALID_FIELD.
+
 enum ModbusDataType {
     NONE,       // Tipo especial para indicar que o campo não é aplicável ou não disponível
     U16,        // Unsigned 16-bit integer
@@ -54,11 +56,40 @@ struct ModbusField {
     uint16_t length; // Número de registradores (16 bits cada)
     uint16_t stride; // Número de registradores entre os campos (para arrays)
     float scale;
-    bool read;
-    bool write;
+    bool readable;
+    bool writable;
+};
+
+enum Manufacturer {
+    WEG,
+    GOODWE,
+    FOXESS,
+    HUAWEI,
+};
+
+enum FieldAccessMode {
+    SIMPLE_FIELD,       // Address / length / stride resolvem
+    SPECIAL_FIELD,      // Requer lógica personalizada para leitura/escrita
+    NOT_AVAILABLE       // Campo não disponível nesse modelo
+};
+
+struct ModbusField {
+    uint16_t address;
+    ModbusDataType type;
+    uint16_t length; // Número de registradores (16 bits cada)
+    uint16_t stride; // Número de registradores entre os campos (para arrays)
+    float scale;
+    bool readable;
+    bool writable;
+    FieldAccessMode mode;
+    uint16_t handlerId; // ID para identificar qual lógica personalizada usar no caso de SPECIAL_FIELD 
 };
 
 constexpr ModbusField INVALID_FIELD = { 0xFFFF, NONE, 0, 0, 1.0f, false, false };
+
+
+
+
 
 struct ModbusInverterMap {
     // Identificação
@@ -66,6 +97,7 @@ struct ModbusInverterMap {
 
     // Controle
     ModbusField boot;
+    ModbusField shutdown;
     ModbusField enablePowerLimit;
     ModbusField setPowerLimit;
     ModbusField setPowerLimitPercent;

@@ -1,8 +1,6 @@
 #include "InverterDescriptor.h"
 #include "InverterModels.h"
 
-static const InverterDescriptor _​​​​​​​​​​​​​​SIW100G_M010_W00 =       {SINGLE_PHASE, MICRO , ON_GRID,  2, 1000 }; //Colocar quantidade de strings
-static const InverterDescriptor _​​​​​​​​​​​​​​SIW100G_M024_W10 =       {SINGLE_PHASE, MICRO , ON_GRID,  2, 2400 };
 static const InverterDescriptor _SIW200_M030 =            {SINGLE_PHASE, STRING, ON_GRID,  2, 3000 };
 static const InverterDescriptor _SIW200_M050 =            {SINGLE_PHASE, STRING, ON_GRID,  2, 5000 };
 static const InverterDescriptor _SIW200_M085 =            {SINGLE_PHASE, STRING, ON_GRID,  3, 8500 };
@@ -155,10 +153,6 @@ static const InverterDescriptor _SUN2000_250KTL_H1 =      {THREE_PHASE , STRING,
 
 const InverterDescriptor* getDescriptor(InverterModel model) {
     switch (model) {
-        case ​​​​​​​​​​​​​​SIW100G_M010_W00:
-            return &_​​​​​​​​​​​​​​SIW100G_M010_W00;
-        case ​​​​​​​​​​​​​​SIW100G_M024_W10:
-            return &_​​​​​​​​​​​​​​SIW100G_M024_W10;
         case SIW200_M030:
             return &_SIW200_M030;
         case SIW200_M050:
