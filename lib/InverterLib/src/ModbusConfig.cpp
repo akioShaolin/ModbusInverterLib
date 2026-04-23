@@ -1,19 +1,28 @@
 #include "ModbusConfig.h"
 
-ModbusConfig::ModbusConfig() : _id(1), _baud(9600), _dataBits(8), _parity(0), _stopBits(1) {}
+ModbusConfig::ModbusConfig() : _id(1), _baud(9600), _serialConfig(SERIAL_8N1) {}
+
+void ModbusConfig::applyTo(ModbusRTU& mb, HardwareSerial& serial) {
+    // Não iniciar o modbus e o serial varias vezes. Ajustar isso aqui depois
+    serial.begin(_baud, _serialConfig);
+
+    mb.begin(&serial);
+    mb.slave(_id);
+
+}
 
 void ModbusConfig::setConfig(uint8_t id, uint32_t baud) {
     _id = id;
     _baud = baud;
 }
 
-void ModbusConfig::setConfig(uint8_t id, uint32_t baud, uint8_t dataBits, uint8_t parity, uint8_t stopBits) {
+void ModbusConfig::setConfig(uint8_t id, uint32_t baud, SerialConfig config) {
     _id = id;
     _baud = baud;
-    _dataBits = dataBits;
-    _parity = parity;
-    _stopBits = stopBits;
+    _serialConfig = config;
 }
+
+
 
 void ModbusConfig::setId(uint8_t id) {
     _id = id;
@@ -23,16 +32,8 @@ void ModbusConfig::setBaud(uint32_t baud) {
     _baud = baud;
 }
 
-void ModbusConfig::setDataBits(uint8_t dataBits) {
-    _dataBits = dataBits;
-}
-
-void ModbusConfig::setParity(uint8_t parity) {
-    _parity = parity;
-}
-
-void ModbusConfig::setStopBits(uint8_t stopBits) {
-    _stopBits = stopBits;
+void ModbusConfig::setSerialConfig(SerialConfig config) {
+    _serialConfig = config;
 }
 
 uint8_t ModbusConfig::getId() const {
@@ -42,14 +43,7 @@ uint8_t ModbusConfig::getId() const {
 uint32_t ModbusConfig::getBaud() const {
     return _baud;
 }
-uint8_t ModbusConfig::getDataBits() const {
-    return _dataBits;
-}
 
-uint8_t ModbusConfig::getParity() const {
-    return _parity;
-}
-
-uint8_t ModbusConfig::getStopBits() const {
-    return _stopBits;
+SerialConfig ModbusConfig::getSerialConfig() const {
+    return _serialConfig;
 }

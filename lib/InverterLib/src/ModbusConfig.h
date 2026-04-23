@@ -2,32 +2,32 @@
 #define MODBUS_CONFIG_H
 
 #include <Arduino.h>
+#include <ModbusRTU.h>
 
 class ModbusConfig {
 public:
     ModbusConfig();
 
+    void applyTo(ModbusRTU& mb, HardwareSerial& serial);
+
     void setConfig(uint8_t id, uint32_t baud);
-    void setConfig(uint8_t id, uint32_t baud, uint8_t dataBits, uint8_t parity, uint8_t stopBits);
+    void setConfig(uint8_t id, uint32_t baud, SerialConfig config);
 
     void setId(uint8_t id);
     void setBaud(uint32_t baud);
-    void setDataBits(uint8_t dataBits);
-    void setParity(uint8_t parity);
-    void setStopBits(uint8_t stopBits);
-    
+    void setSerialConfig(SerialConfig config);
+
     uint8_t getId() const;
     uint32_t getBaud() const;
-    uint8_t getDataBits() const;
-    uint8_t getParity() const;
-    uint8_t getStopBits() const;
+    SerialConfig getSerialConfig() const;
 
 private:
     uint8_t _id;
     uint32_t _baud;
-    uint8_t _dataBits;
-    uint8_t _parity;
-    uint8_t _stopBits;
+    SerialConfig _serialConfig;
+
+    uint32_t _timeout = 1000;
+    int8_t _dePin = -1;
 };
 
 #endif
