@@ -56,7 +56,7 @@ enum FieldAccessMode {
 
 enum HandlerId {
     DEFAULT_HANDLER,
-    HANDLER_GOODWE_STRINGS
+    GOODWE_HANDLER,
 };
 
 struct ModbusField {
