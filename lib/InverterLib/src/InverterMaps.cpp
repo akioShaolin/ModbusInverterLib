@@ -4,6 +4,119 @@
 // ------------------------------------------------- WEG ------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+static const ModbusInverterMap map_SIW200 = {
+    // Identificação
+    { 0x0200, ASCII, 8, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    { 0x0120, U16, 1, 1, 1.0f, false, true },     // Boot. Write 0
+    { 0x0121, U16, 1, 1, 1.0f, false, true },     // Shutdown. Write 0
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    { 0x0100, U16, 1, 1, 1.0f, true, true },      // Set Power Limit Percent (%)
+    { 0x0123, U16, 1, 1, 1.0f, true, true },      // Enable Export Limit (0-Off, 1-On)
+    INVALID_FIELD,                                // Set Export Limit (W) (não disponível nesse modelo)
+    { 0x0124, U16, 1, 1, 0.1f, true, true },      // Set Export Limit Percent(%)
+    INVALID_FIELD,                                // Enable Power Factor (Não disponível nesse modelo)
+    { 0x0101, U16, 1, 1, 1.0f, true, true },      // Set Power Factor % [1, 20] LAGGING, [80, 100] LEADING
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    { 0x0010, U16, 1, 1, 1.0f, true, false, FIELD_SPECIAL, GOODWE_HANDLER },     // Time Year MSB
+    { 0x0010, U16, 1, 1, 1.0f, true, false, FIELD_SPECIAL, GOODWE_HANDLER },     // Time Month LSB
+    { 0x0011, U16, 1, 1, 1.0f, true, false, FIELD_SPECIAL, GOODWE_HANDLER },     // Time Day MSB
+    { 0x0011, U16, 1, 1, 1.0f, true, false, FIELD_SPECIAL, GOODWE_HANDLER },     // Time Hour LSB
+    { 0x0012, U16, 1, 1, 1.0f, true, false, FIELD_SPECIAL, GOODWE_HANDLER },     // Time Minute MSB
+    { 0x0012, U16, 1, 1, 1.0f, true, false, FIELD_SPECIAL, GOODWE_HANDLER },     // Time Second LSB
+    INVALID_FIELD,                                // Time Epoch (não disponível nesse modelo)
+    // Status
+    { 0x0222, U16, 2, 1, 0.1f, true, false },     // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    { 0x0236, U16, 1, 1, 0.1f, true, false },     // Daily Energy (kWh)  
+
+    { 0x0233, U16, 1, 1, 1.0f, true, false },     // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Reactive Power (kVAr) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Power Factor (não disponível nesse modelo)
+
+    { 0x022A, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
+    { 0x022D, U16, 3, 1, 0.1f, true, false },     // Grid Current R, S, T (A)
+    { 0x022F, U16, 3, 1, 0.01f, true, false },    // Frequency (Hz)
+
+    { 0x0235, U16, 1, 1, 0.1f, true, false },     // Temperature (°C)
+    INVALID_FIELD,                                // Insulation Resistance (kΩ)
+    { 0x0234, U16, 1, 1, 1.0f, true, false },     // Inverter Status
+    { 0x0220, U32, 1, 2, 1.0f, true, false },     // Alarm
+
+    { 0x0226, U16, 2, 1, 0.1f, true, false },    // String Voltage (V)
+    { 0x0228, U16, 2, 1, 0.1f, true, false },    // String Current (A)
+    INVALID_FIELD,                               // String Power (W) (não disponível nesse modelo)
+
+    INVALID_FIELD,                               // Battery Voltage (V) (não disponível nesse modelo)
+    INVALID_FIELD,                               // Battery Current (A) (não disponível nesse modelo)
+    INVALID_FIELD,                               // Battery Power (W) (não disponível nesse modelo)
+    INVALID_FIELD,                               // Battery SoC (%) (não disponível nesse modelo)
+    INVALID_FIELD,                               // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                               // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                               // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                // EPS Active Power (W) (não disponível nesse modelo)
+};
+
+static const ModbusInverterMap map_SIW200H = {};
+static const ModbusInverterMap map_SIW200G = {};
+
+static const ModbusInverterMap map_SIW300H = {
+    // Identificação
+    { 0x753F, ASCII, 15, 1, 1.0f, true, false },  // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    { 0x9D08, U16, 1, 1, 1.0f, false, true },     // Boot. Write 1
+    { 0x9D09, U16, 1, 1, 1.0f, false, true },     // Shutdown. Write 1
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit Percent (%)
+    { 0xB937, U16, 1, 1, 1.0f, true, true  },     // Enable Export Limit (0-Off, 1-DI, 5-Zero, 6-Power limited, 7-Power limited percent)
+    { 0xB938, U32, 1, 2, 0.001f, true, true  },   // Set Export Limit (kW)
+    { 0xB93A, U16, 1, 1, 0.1f, true, true  },     // Set Export Limit Percent(%)
+    { 0x89E8, U16, 1, 1, 1.0f, true, true },      // Enable Power Factor (Não disponível nesse modelo)
+    { 0x9CBA, U16, 1, 1, 0.001f, true, true },    // Set Power Factor
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    INVALID_FIELD,                                // Time Year (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Month (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Day (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Hour (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Minute (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Second (não disponível nesse modelo)
+    { 0x9C40, U32, 1, 2, 1.0f, true, false },     // Time Epoch
+    // Status
+    { 0x7D6A, U32, 1, 2, 0.01f, true, false },    // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    { 0x7D72, U32, 1, 2, 0.01f, true, false },    // Daily Energy (kWh)  
+
+    { 0x7D50, I32, 1, 2, 0.001f, true, false },   // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    { 0x7D52, I32, 1, 2, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x7D54, I16, 1, 1, 0.001f, true, false },   // Power Factor
+
+    { 0x7D45, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
+    { 0x7D48, I16, 3, 2, 0.001f, true, false },   // Grid Current R, S, T (A)
+    { 0x7D55, U16, 1, 1, 0.01f, true, false },    // Frequency (Hz)
+
+    { 0x7D57, I16, 1, 1, 0.1f, true, false },     // Temperature (°C)
+    { 0x7D58, U16, 1, 1, 0.001f, true, false },   // Insulation Resistance (kΩ)
+    { 0x7D59, U16, 1, 1, 1.0f, true, false },     // Inverter Status
+    { 0x7D08, U16, 5, 1, 1.0f, true, false },     // Alarm
+
+    { 0x7D10, I16, 24, 2, 0.1f, true, false },    // String Voltage (V)
+    { 0x7D11, I16, 24, 2, 0.01f, true, false},    // String Current (A)
+    INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
+                             
+    { 0x908B, I16, 1, 1, 0.1f, true, false},      // Battery Voltage (V)                
+    { 0x909D, I16, 1, 1, 0.1, true, false },      // Battery Current (A) (não disponível nesse modelo)
+    { 0x9089, I32, 1, 2, 1.0f, true, false},      // Battery Power (W)
+    { 0x908C, I16, 1, 1, 0.1f, true, false},      // Battery SoC (%)
+    { 0x9423, U16, 1, 1, 0.1f, true, false},                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
+};
+
 static const ModbusInverterMap map_SIW400 = {
     // Identificação
     { 0x0200, ASCII, 8, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
@@ -58,6 +171,8 @@ static const ModbusInverterMap map_SIW400 = {
     INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
     INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
 };
+
+static const ModbusInverterMap map_SIW400G_T012_T025 = {};
 
 static const ModbusInverterMap map_SIW400G_T050_T100 = {
     // Identificação
@@ -167,6 +282,118 @@ static const ModbusInverterMap map_SIW400H_W10 = {
     { 0xB1B5, U16, 3, 1, 0.1f, true, false },     // EPS Voltage R, S, T (V) (não disponível nesse modelo)
     { 0xB1B8, U16, 3, 1, 0.1f, true, false },     // EPS Current R, S, T (A) (não disponível nesse modelo)
     { 0xB1BE, U32, 1, 2, 0.01f, true, false }     // EPS Active Power (W) (não disponível nesse modelo)
+};
+
+static const ModbusInverterMap map_SIW420G = {};
+
+static const ModbusInverterMap map_SIW500G = {
+    // Identificação
+    { 0x753F, ASCII, 15, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    { 0x9D08, U16, 1, 1, 1.0f, false, true },     // Boot. Write 1
+    { 0x9D09, U16, 1, 1, 1.0f, false, true },     // Shutdown. Write 1
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit Percent (%)
+    { 0xB937, U16, 1, 1, 1.0f, true, true  },     // Enable Export Limit (0-Off, 1-DI, 5-Zero, 6-Power limited, 7-Power limited percent)
+    { 0xB938, U32, 1, 2, 0.001f, true, true  },   // Set Export Limit (kW)
+    { 0xB93A, U16, 1, 1, 0.1f, true, true  },     // Set Export Limit Percent(%)
+    { 0x89E8, U16, 1, 1, 1.0f, true, true },      // Enable Power Factor (Não disponível nesse modelo)
+    { 0x9CBA, U16, 1, 1, 0.001f, true, true },    // Set Power Factor
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    INVALID_FIELD,                                // Time Year (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Month (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Day (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Hour (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Minute (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Second (não disponível nesse modelo)
+    { 0x9C40, U32, 1, 2, 1.0f, true, false },     // Time Epoch
+    // Status
+    { 0x7D6A, U32, 1, 2, 0.01f, true, false },    // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    { 0x7D72, U32, 1, 2, 0.01f, true, false },    // Daily Energy (kWh)  
+
+    { 0x7D50, I32, 1, 2, 0.001f, true, false },   // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    { 0x7D52, I32, 1, 2, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x7D54, I16, 1, 1, 0.001f, true, false },   // Power Factor
+
+    { 0x7D45, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
+    { 0x7D48, I16, 3, 2, 0.001f, true, false },   // Grid Current R, S, T (A)
+    { 0x7D55, U16, 1, 1, 0.01f, true, false },    // Frequency (Hz)
+
+    { 0x7D57, I16, 1, 1, 0.1f, true, false },     // Temperature (°C)
+    { 0x7D58, U16, 1, 1, 0.001f, true, false },   // Insulation Resistance (kΩ)
+    { 0x7D59, U16, 1, 1, 1.0f, true, false },     // Inverter Status
+    { 0x7D08, U16, 5, 1, 1.0f, true, false },     // Alarm
+
+    { 0x7D10, I16, 24, 2, 0.1f, true, false },    // String Voltage (V)
+    { 0x7D11, I16, 24, 2, 0.01f, true, false},    // String Current (A)
+    INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
+                             
+    INVALID_FIELD,                                // Battery Voltage (V)                
+    INVALID_FIELD,                                // Battery Current (A) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery Power (W)
+    INVALID_FIELD,                                // Battery SoC (%)
+    INVALID_FIELD,                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
+};
+
+static const ModbusInverterMap map_SIW500H = {
+    // Identificação
+    { 0x753F, ASCII, 15, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    { 0x9D08, U16, 1, 1, 1.0f, false, true },     // Boot. Write 1
+    { 0x9D09, U16, 1, 1, 1.0f, false, true },     // Shutdown. Write 1
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit Percent (%)
+    { 0xB937, U16, 1, 1, 1.0f, true, true  },     // Enable Export Limit (0-Off, 1-DI, 5-Zero, 6-Power limited, 7-Power limited percent)
+    { 0xB938, U32, 1, 2, 0.001f, true, true  },   // Set Export Limit (kW)
+    { 0xB93A, U16, 1, 1, 0.1f, true, true  },     // Set Export Limit Percent(%)
+    { 0x89E8, U16, 1, 1, 1.0f, true, true },      // Enable Power Factor (Não disponível nesse modelo)
+    { 0x9CBA, U16, 1, 1, 0.001f, true, true },    // Set Power Factor
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    INVALID_FIELD,                                // Time Year (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Month (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Day (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Hour (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Minute (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Second (não disponível nesse modelo)
+    { 0x9C40, U32, 1, 2, 1.0f, true, false },     // Time Epoch
+    // Status
+    { 0x7D6A, U32, 1, 2, 0.01f, true, false },    // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    { 0x7D72, U32, 1, 2, 0.01f, true, false },    // Daily Energy (kWh)  
+
+    { 0x7D50, I32, 1, 2, 0.001f, true, false },   // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    { 0x7D52, I32, 1, 2, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x7D54, I16, 1, 1, 0.001f, true, false },   // Power Factor
+
+    { 0x7D45, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
+    { 0x7D48, I16, 3, 2, 0.001f, true, false },   // Grid Current R, S, T (A)
+    { 0x7D55, U16, 1, 1, 0.01f, true, false },    // Frequency (Hz)
+
+    { 0x7D57, I16, 1, 1, 0.1f, true, false },     // Temperature (°C)
+    { 0x7D58, U16, 1, 1, 0.001f, true, false },   // Insulation Resistance (kΩ)
+    { 0x7D59, U16, 1, 1, 1.0f, true, false },     // Inverter Status
+    { 0x7D08, U16, 5, 1, 1.0f, true, false },     // Alarm
+
+    { 0x7D10, I16, 24, 2, 0.1f, true, false },    // String Voltage (V)
+    { 0x7D11, I16, 24, 2, 0.01f, true, false},    // String Current (A)
+    INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
+                             
+    { 0x908B, I16, 1, 1, 0.1f, true, false},      // Battery Voltage (V)                
+    { 0x909D, I16, 1, 1, 0.1, true, false },      // Battery Current (A) (não disponível nesse modelo)
+    { 0x9089, I32, 1, 2, 1.0f, true, false},      // Battery Power (W)
+    { 0x908C, I16, 1, 1, 0.1f, true, false},      // Battery SoC (%)
+    { 0x9423, U16, 1, 1, 0.1f, true, false},                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
 };
 
 static const ModbusInverterMap map_SIW600 = {
@@ -283,7 +510,15 @@ static const ModbusInverterMap map_SIW610 = {
 // ----------------------------------------------- FOXESS -----------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-static const ModbusInverterMap map_R_series = {
+static const ModbusInverterMap map_S_G2_series = {};
+
+static const ModbusInverterMap map_F_G2_series = {};
+
+static const ModbusInverterMap map_G_series = {};
+
+static const ModbusInverterMap map_T_G3_series = {};
+
+static const ModbusInverterMap map_H3P_series = {
     // Identificação
     { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
@@ -293,8 +528,8 @@ static const ModbusInverterMap map_R_series = {
     INVALID_FIELD,                               // Set Power Limit (W) (não disponível nesse modelo)
     { 0x9D6D, U16, 1, 1, 0.1f, true, true },     // Set Power Limit Percent (%)
     { 0xA887, U16, 1, 1, 1.0f, true, true },     // Enable Export Limit (55 - Disable, AA - Enable)
-    INVALID_FIELD,                               // Set Export Limit (W) (não disponível nesse modelo)
-    { 0xA889, U16, 1, 1, 0.1f, true, true },     // Set Export Limit Percent(%)
+    { 0xA889, U16, 1, 1, 1.0f, true, true },     // Set Export Limit (kW)
+    INVALID_FIELD,                               // Set Export Limit Percent(%) (não disponível nesse modelo)
     { 0x9D68, U16, 1, 1, 1.0f, true, true },     // Enable Power Factor (0 - Disable, 1 - Enable)
     { 0x9D74, U16, 1, 1, 0.001f, true, true },   // Set Power Factor
     { 0x9D75, U16, 1, 1, 1.0f, true, true },     // Power Factor Excitation Mode (0 - Inductive, 1 - Capacitive)
@@ -307,10 +542,10 @@ static const ModbusInverterMap map_R_series = {
     { 0xA715, U16, 1, 1, 1.0f, true, false },     // Time Second
     INVALID_FIELD,                                // Time Epoch (não disponível nesse modelo)
     // Status
-    { 0x9C95, U64, 1, 4, 100.0f, true, false },   // Total Energy (Wh)
-    INVALID_FIELD,                                // Daily Energy (Wh) (não disponível nesse modelo)    
+    { 0xA2BB, U32, 1, 2, 0.1f, true, false },     // Total Energy (Wh)
+    { 0xA2BA, U16, 1, 1, 0.1f, true, false },     // Daily Energy (Wh) (não disponível nesse modelo)    
 
-    { 0x9C8F, I16, 1, 1, 100.0f, true, false },   // Active Power (kW)
+    { 0xAA6D, I32, 1, 2, 0.001f, true, false },   // Active Power (kW)
     { 0x9C90, I16, 1, 1, 100.0f, true, false },   // Apparent Power (kVA)
     { 0x9C91, I16, 1, 1, 100.0f, true, false },   // Reactive Power (kVAr)
     { 0x9C92, I16, 1, 1, 0.001f, true, false },   // Power Factor
@@ -324,18 +559,18 @@ static const ModbusInverterMap map_R_series = {
     { 0x9C8B, U16, 1, 1, 1.0f, true, false },     // Inverter Status
     { 0x9C8D, U32, 1, 2, 1.0f, true, false },     // Alarm
 
-    { 0xA019, U16, 18, 2, 1.0f, true, false },    // String Voltage (V)
-    { 0xA01A, U16, 18, 2, 0.01f, true, false },   // String Current (A)
+    { 0xA019, U16, 24, 2, 1.0f, true, false },    // String Voltage (V)
+    { 0xA01A, U16, 24, 2, 0.01f, true, false },   // String Current (A)
     INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
 
-    INVALID_FIELD,                                // Battery Voltage (V) (não disponível nesse modelo)
-    INVALID_FIELD,                                // Battery Current (A) (não disponível nesse modelo)
+    { 0xA3AA, U16, 2, 2671, 0.01f, true, false }, // Battery Voltage (V) (não disponível nesse modelo)
+    { 0xA3AB, U16, 2, 2671, 0.01f, true, false }, // Battery Current (A) (não disponível nesse modelo)
     INVALID_FIELD,                                // Battery Power (W) (não disponível nesse modelo)
-    INVALID_FIELD,                                // Battery SoC (%) (não disponível nesse modelo)
-    INVALID_FIELD,                                // Battery SoH (%) (não disponível nesse modelo)
-    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
-    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
-    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
+    { 0xA3AC, U16, 2, 2671, 0.01f, true, false }, // Battery SoC (%) (não disponível nesse modelo)
+    { 0xA3CB, U16, 2, 2671, 0.01f, true, false }, // Battery SoH (%) (não disponível nesse modelo)
+    { 0xB1B5, U16, 3, 1, 0.1f, true, false },     // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    { 0xB1B8, U16, 3, 1, 0.1f, true, false },     // EPS Current R, S, T (A) (não disponível nesse modelo)
+    { 0xB1BE, U32, 1, 2, 0.01f, true, false }     // EPS Active Power (W) (não disponível nesse modelo)
 };
 
 static const ModbusInverterMap map_V_series = {
@@ -393,7 +628,7 @@ static const ModbusInverterMap map_V_series = {
     INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
 };
 
-static const ModbusInverterMap map_H3P_series = {
+static const ModbusInverterMap map_R_series = {
     // Identificação
     { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
@@ -403,8 +638,8 @@ static const ModbusInverterMap map_H3P_series = {
     INVALID_FIELD,                               // Set Power Limit (W) (não disponível nesse modelo)
     { 0x9D6D, U16, 1, 1, 0.1f, true, true },     // Set Power Limit Percent (%)
     { 0xA887, U16, 1, 1, 1.0f, true, true },     // Enable Export Limit (55 - Disable, AA - Enable)
-    { 0xA889, U16, 1, 1, 1.0f, true, true },     // Set Export Limit (kW)
-    INVALID_FIELD,                               // Set Export Limit Percent(%) (não disponível nesse modelo)
+    INVALID_FIELD,                               // Set Export Limit (W) (não disponível nesse modelo)
+    { 0xA889, U16, 1, 1, 0.1f, true, true },     // Set Export Limit Percent(%)
     { 0x9D68, U16, 1, 1, 1.0f, true, true },     // Enable Power Factor (0 - Disable, 1 - Enable)
     { 0x9D74, U16, 1, 1, 0.001f, true, true },   // Set Power Factor
     { 0x9D75, U16, 1, 1, 1.0f, true, true },     // Power Factor Excitation Mode (0 - Inductive, 1 - Capacitive)
@@ -417,10 +652,10 @@ static const ModbusInverterMap map_H3P_series = {
     { 0xA715, U16, 1, 1, 1.0f, true, false },     // Time Second
     INVALID_FIELD,                                // Time Epoch (não disponível nesse modelo)
     // Status
-    { 0xA2BB, U32, 1, 2, 0.1f, true, false },     // Total Energy (Wh)
-    { 0xA2BA, U16, 1, 1, 0.1f, true, false },     // Daily Energy (Wh) (não disponível nesse modelo)    
+    { 0x9C95, U64, 1, 4, 100.0f, true, false },   // Total Energy (Wh)
+    INVALID_FIELD,                                // Daily Energy (Wh) (não disponível nesse modelo)    
 
-    { 0xAA6D, I32, 1, 2, 0.001f, true, false },   // Active Power (kW)
+    { 0x9C8F, I16, 1, 1, 100.0f, true, false },   // Active Power (kW)
     { 0x9C90, I16, 1, 1, 100.0f, true, false },   // Apparent Power (kVA)
     { 0x9C91, I16, 1, 1, 100.0f, true, false },   // Reactive Power (kVAr)
     { 0x9C92, I16, 1, 1, 0.001f, true, false },   // Power Factor
@@ -434,18 +669,18 @@ static const ModbusInverterMap map_H3P_series = {
     { 0x9C8B, U16, 1, 1, 1.0f, true, false },     // Inverter Status
     { 0x9C8D, U32, 1, 2, 1.0f, true, false },     // Alarm
 
-    { 0xA019, U16, 24, 2, 1.0f, true, false },    // String Voltage (V)
-    { 0xA01A, U16, 24, 2, 0.01f, true, false },   // String Current (A)
+    { 0xA019, U16, 18, 2, 1.0f, true, false },    // String Voltage (V)
+    { 0xA01A, U16, 18, 2, 0.01f, true, false },   // String Current (A)
     INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
 
-    { 0xA3AA, U16, 2, 2671, 0.01f, true, false }, // Battery Voltage (V) (não disponível nesse modelo)
-    { 0xA3AB, U16, 2, 2671, 0.01f, true, false }, // Battery Current (A) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery Voltage (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery Current (A) (não disponível nesse modelo)
     INVALID_FIELD,                                // Battery Power (W) (não disponível nesse modelo)
-    { 0xA3AC, U16, 2, 2671, 0.01f, true, false }, // Battery SoC (%) (não disponível nesse modelo)
-    { 0xA3CB, U16, 2, 2671, 0.01f, true, false }, // Battery SoH (%) (não disponível nesse modelo)
-    { 0xB1B5, U16, 3, 1, 0.1f, true, false },     // EPS Voltage R, S, T (V) (não disponível nesse modelo)
-    { 0xB1B8, U16, 3, 1, 0.1f, true, false },     // EPS Current R, S, T (A) (não disponível nesse modelo)
-    { 0xB1BE, U32, 1, 2, 0.01f, true, false }     // EPS Active Power (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery SoC (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
 };
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -562,11 +797,197 @@ static const ModbusInverterMap map_GOODWE_MT_ONLY = {
     INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
 };
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------- HUAWEI -----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+static const ModbusInverterMap map_SUN2000_MONO = {
+    // Identificação
+    { 0x753F, ASCII, 15, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    { 0x9D08, U16, 1, 1, 1.0f, false, true },     // Boot. Write 1
+    { 0x9D09, U16, 1, 1, 1.0f, false, true },     // Shutdown. Write 1
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit Percent (%)
+    { 0xB937, U16, 1, 1, 1.0f, true, true  },     // Enable Export Limit (0-Off, 1-DI, 5-Zero, 6-Power limited, 7-Power limited percent)
+    { 0xB938, U32, 1, 2, 0.001f, true, true  },   // Set Export Limit (kW)
+    { 0xB93A, U16, 1, 1, 0.1f, true, true  },     // Set Export Limit Percent(%)
+    { 0x89E8, U16, 1, 1, 1.0f, true, true },      // Enable Power Factor (Não disponível nesse modelo)
+    { 0x9CBA, U16, 1, 1, 0.001f, true, true },    // Set Power Factor
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    INVALID_FIELD,                                // Time Year (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Month (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Day (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Hour (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Minute (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Second (não disponível nesse modelo)
+    { 0x9C40, U32, 1, 2, 1.0f, true, false },     // Time Epoch
+    // Status
+    { 0x7D6A, U32, 1, 2, 0.01f, true, false },    // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    { 0x7D72, U32, 1, 2, 0.01f, true, false },    // Daily Energy (kWh)  
+
+    { 0x7D50, I32, 1, 2, 0.001f, true, false },   // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    { 0x7D52, I32, 1, 2, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x7D54, I16, 1, 1, 0.001f, true, false },   // Power Factor
+
+    { 0x7D45, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
+    { 0x7D48, I16, 3, 2, 0.001f, true, false },   // Grid Current R, S, T (A)
+    { 0x7D55, U16, 1, 1, 0.01f, true, false },    // Frequency (Hz)
+
+    { 0x7D57, I16, 1, 1, 0.1f, true, false },     // Temperature (°C)
+    { 0x7D58, U16, 1, 1, 0.001f, true, false },   // Insulation Resistance (kΩ)
+    { 0x7D59, U16, 1, 1, 1.0f, true, false },     // Inverter Status
+    { 0x7D08, U16, 5, 1, 1.0f, true, false },     // Alarm
+
+    { 0x7D10, I16, 24, 2, 0.1f, true, false },    // String Voltage (V)
+    { 0x7D11, I16, 24, 2, 0.01f, true, false},    // String Current (A)
+    INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
+                             
+    INVALID_FIELD,                                // Battery Voltage (V)                
+    INVALID_FIELD,                                // Battery Current (A) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery Power (W)
+    INVALID_FIELD,                                // Battery SoC (%)
+    INVALID_FIELD,                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
+};
+
+static const ModbusInverterMap map_SUN2000_TRIF = {
+    // Identificação
+    { 0x753F, ASCII, 15, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    { 0x9D08, U16, 1, 1, 1.0f, false, true },     // Boot. Write 1
+    { 0x9D09, U16, 1, 1, 1.0f, false, true },     // Shutdown. Write 1
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit Percent (%)
+    { 0xB937, U16, 1, 1, 1.0f, true, true  },     // Enable Export Limit (0-Off, 1-DI, 5-Zero, 6-Power limited, 7-Power limited percent)
+    { 0xB938, U32, 1, 2, 0.001f, true, true  },   // Set Export Limit (kW)
+    { 0xB93A, U16, 1, 1, 0.1f, true, true  },     // Set Export Limit Percent(%)
+    { 0x89E8, U16, 1, 1, 1.0f, true, true },      // Enable Power Factor (Não disponível nesse modelo)
+    { 0x9CBA, U16, 1, 1, 0.001f, true, true },    // Set Power Factor
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    INVALID_FIELD,                                // Time Year (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Month (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Day (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Hour (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Minute (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Second (não disponível nesse modelo)
+    { 0x9C40, U32, 1, 2, 1.0f, true, false },     // Time Epoch
+    // Status
+    { 0x7D6A, U32, 1, 2, 0.01f, true, false },    // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    { 0x7D72, U32, 1, 2, 0.01f, true, false },    // Daily Energy (kWh)  
+
+    { 0x7D50, I32, 1, 2, 0.001f, true, false },   // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    { 0x7D52, I32, 1, 2, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x7D54, I16, 1, 1, 0.001f, true, false },   // Power Factor
+
+    { 0x7D45, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
+    { 0x7D48, I16, 3, 2, 0.001f, true, false },   // Grid Current R, S, T (A)
+    { 0x7D55, U16, 1, 1, 0.01f, true, false },    // Frequency (Hz)
+
+    { 0x7D57, I16, 1, 1, 0.1f, true, false },     // Temperature (°C)
+    { 0x7D58, U16, 1, 1, 0.001f, true, false },   // Insulation Resistance (kΩ)
+    { 0x7D59, U16, 1, 1, 1.0f, true, false },     // Inverter Status
+    { 0x7D08, U16, 5, 1, 1.0f, true, false },     // Alarm
+
+    { 0x7D10, I16, 24, 2, 0.1f, true, false },    // String Voltage (V)
+    { 0x7D11, I16, 24, 2, 0.01f, true, false},    // String Current (A)
+    INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
+                             
+    INVALID_FIELD,                                // Battery Voltage (V)                
+    INVALID_FIELD,                                // Battery Current (A) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery Power (W)
+    INVALID_FIELD,                                // Battery SoC (%)
+    INVALID_FIELD,                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
+};
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------- Escolha ----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 const ModbusInverterMap* getInverterMap(InverterModel model) {
     switch (model) {
         // Weg
+        case SIW200_M030:
+            return &map_SIW200;
+        case SIW200_M050:
+            return &map_SIW200;
+        case SIW200_M085:
+            return &map_SIW200;
+        case SIW200_M100:
+            return &map_SIW200;
+// #
+        case SIW200H_M050_W00:
+            return &map_SIW200H;
+        case SIW200H_M075_W10:
+            return &map_SIW200H;
+        case SIW200H_M105_W10:
+            return &map_SIW200H;
+        case SIW200G_M030_W0:
+            return &map_SIW200G;
+        case SIW200G_M030_W1:
+            return &map_SIW200G;
+        case SIW200G_M050_W0:
+            return &map_SIW200G;
+        case SIW200G_M050_W1:
+            return &map_SIW200G;
+        case SIW200G_M060_W0:
+            return &map_SIW200G;
+        case SIW200G_M060_W1:
+            return &map_SIW200G;
+        case SIW200G_M070_W1:
+            return &map_SIW200G;
+        case SIW200G_M075_W1:
+            return &map_SIW200G;
+        case SIW200G_M080_W1:
+            return &map_SIW200G;
+        case SIW200G_M090_W1:
+            return &map_SIW200G;
+        case SIW200G_M105_W1:
+            return &map_SIW200G;
+// #
+        case SIW300H_M030_W00:
+            return &map_SIW300H;
+        case SIW300H_M050_W00:
+            return &map_SIW300H;
+        case SIW300H_M060_W00:
+            return &map_SIW300H;
+        case SIW300H_M075_W00:
+            return &map_SIW300H;
+        case SIW300H_M080_W00:
+            return &map_SIW300H;
+        case SIW300H_M100_W00:
+            return &map_SIW300H;
         case SIW400_ST075:
             return &map_SIW400;
+// #
+        case SIW400G_T012_W0:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T012_W1:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T015_W0:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T015_W1:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T020_W0:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T020_W1:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T025_W0:
+            return &map_SIW400G_T012_T025;
+        case SIW400G_T025_W1:
+            return &map_SIW400G_T012_T025;
+// #
         case SIW400G_K015_W00:
             return &map_SIW400G_T050_T100;            
         case SIW400G_K020_W00:
@@ -591,6 +1012,66 @@ const ModbusInverterMap* getInverterMap(InverterModel model) {
             return &map_SIW400H_W10;
         case SIW400H_T030_W10:
             return &map_SIW400H_W10;
+        case SIW420G_K025_W00:
+            return &map_SIW420G;
+        case SIW420G_K075_W00:
+            return &map_SIW420G;
+        case SIW500G_T100_W0:
+            return &map_SIW500G;
+        case SIW500G_K050_W00:
+            return &map_SIW500G;
+        case SIW500G_K075_W00:
+            return &map_SIW500G;
+        case SIW500G_H250_W0:
+            return &map_SIW500G;
+        case SIW500H_ST012_M2:
+            return &map_SIW500H;
+        case SIW500H_ST015_M2:
+            return &map_SIW500H;
+        case SIW500H_ST020_M2:
+            return &map_SIW500H;
+        case SIW500H_ST030_M3:
+            return &map_SIW500H;
+        case SIW500H_ST036_M3:
+            return &map_SIW500H;
+        case SIW500H_ST040_M3:
+            return &map_SIW500H;
+        case SIW500H_SK020:
+            return &map_SIW500H;
+        case SIW500H_ST030:
+            return &map_SIW500H;
+        case SIW500H_ST036:
+            return &map_SIW500H;
+        case SIW500H_ST040:
+            return &map_SIW500H;
+        case SIW500H_ST060:
+            return &map_SIW500H;
+        case SIW500H_ST100:
+            return &map_SIW500H;
+        case SIW500H_ST060_HV:
+            return &map_SIW500H;
+        case SIW500H_ST100_HV:
+            return &map_SIW500H;
+        case SIW500H_ST200_H0:
+            return &map_SIW500H;
+        case SIW500H_ST200_H3:
+            return &map_SIW500H;
+        case SIW500H_T012_W00:
+            return &map_SIW500H;
+        case SIW500H_T015_W00:
+            return &map_SIW500H;
+        case SIW500H_T017_W00:
+            return &map_SIW500H;
+        case SIW500H_T020_W00:
+            return &map_SIW500H;
+        case SIW500H_T025_W00:
+            return &map_SIW500H;
+        case SIW600_T020_44:
+            return &map_SIW600;
+        case SIW610_T018_W0:
+            return &map_SIW610;
+        case SIW610_T075_W0:
+            return &map_SIW610;
 
         // Goodwe
         case GW3000_XS:
@@ -603,6 +1084,70 @@ const ModbusInverterMap* getInverterMap(InverterModel model) {
             return &map_GOODWE_NON_MT;
 
         // Foxess
+// #
+        case S700_G2:
+            return &map_S_G2_series;
+        case S1000_G2:
+            return &map_S_G2_series;
+        case S1500_G2:
+            return &map_S_G2_series;
+        case S2000_G2:
+            return &map_S_G2_series;
+        case S2500_G2:
+            return &map_S_G2_series;
+        case S3000_G2:
+            return &map_S_G2_series;
+        case S3300_G2:
+            return &map_S_G2_series;
+        case F3000_G2:
+            return &map_F_G2_series;
+        case F3600_G2:
+            return &map_F_G2_series;
+        case F4600_G2:
+            return &map_F_G2_series;
+        case F5000_G2:
+            return &map_F_G2_series;
+        case F5300_G2:
+            return &map_F_G2_series;
+        case F6000_G2:
+            return &map_F_G2_series;
+        case G7:
+            return &map_G_series;
+        case G7_5:
+            return &map_G_series;
+        case G8_:
+            return &map_G_series;
+        case G9:
+            return &map_G_series;
+        case G10:
+            return &map_G_series;
+        case G10_5:
+            return &map_G_series;
+        case T3_G3:
+            return &map_T_G3_series;
+        case T4_G3:
+            return &map_T_G3_series;
+        case T5_G3:
+            return &map_T_G3_series;
+        case T6_G3:
+            return &map_T_G3_series;
+        case T8_G3:
+            return &map_T_G3_series;
+        case T10_G3:
+            return &map_T_G3_series;
+        case T12_G3:
+            return &map_T_G3_series;
+        case T15_G3:
+            return &map_T_G3_series;
+        case T17_G3:
+            return &map_T_G3_series;
+        case T20_G3:
+            return &map_T_G3_series;
+        case T23_G3:
+            return &map_T_G3_series;
+        case T25_G3:
+            return &map_T_G3_series;
+// #
         case V30:
             return &map_V_series;
         case V33:
@@ -633,6 +1178,54 @@ const ModbusInverterMap* getInverterMap(InverterModel model) {
             return &map_R_series;
         case R110:
             return &map_R_series;
+
+        // Huawei
+        case SUN2000_2KTL:
+            return &map_SUN2000_MONO;
+        case SUN2000_3KTL:
+            return &map_SUN2000_MONO;
+        case SUN2000_4KTL:
+            return &map_SUN2000_MONO;
+        case SUN2000_5KTL:
+            return &map_SUN2000_MONO;
+        case SUN2000_6KTL:
+            return &map_SUN2000_MONO;
+        case SUN2000_12KTL_M0:
+            return &map_SUN2000_TRIF;
+        case SUN2000_12KTL_M2:
+            return &map_SUN2000_TRIF;
+        case SUN2000_15KTL_M0:
+            return &map_SUN2000_TRIF;
+        case SUN2000_15KTL_M2:
+            return &map_SUN2000_TRIF;
+        case SUN2000_20KTL_M0:
+            return &map_SUN2000_TRIF;
+        case SUN2000_20KTL_M2:
+            return &map_SUN2000_TRIF;
+        case SUN2000_30KTL:
+            return &map_SUN2000_TRIF;
+        case SUN2000_36KTL_A:
+            return &map_SUN2000_TRIF;
+        case SUN2000_30KTL_M3:
+            return &map_SUN2000_TRIF;
+        case SUN2000_36KTL_M3:
+            return &map_SUN2000_TRIF;
+        case SUN2000_40KTL_M3:
+            return &map_SUN2000_TRIF;
+        case SUN2000_60KTL_M0:
+            return &map_SUN2000_TRIF;
+        case SUN2000_75KTL_M1:
+            return &map_SUN2000_TRIF;
+        case SUN2000_100KTL_M2:
+            return &map_SUN2000_TRIF;
+        case SUN2000_100KTL_H1:
+            return &map_SUN2000_TRIF;
+        case SUN2000_215KTL_H0:
+            return &map_SUN2000_TRIF;
+        case SUN2000_215KTL_H3:
+            return &map_SUN2000_TRIF;
+        case SUN2000_250KTL_H1:
+            return &map_SUN2000_TRIF;
             
         case UNKNOWN_INVERTER:
             return nullptr;
