@@ -493,25 +493,43 @@ bool Inverter::getEPSActivePower(PhaseData& phase) {
 bool Inverter::readField(const ModbusField& field, char* value) {
     if (field.type != ASCII || !field.readable) return false;
     if (value == nullptr) return false;
+    if (field.length == 0 || field.length > 16) return false; // Limitar a leitura a no máximo 32 caracteres (16 registradores de 16 bits)
 
+    uint16_t buffer[16]; // Supondo que o campo tenha no máximo 32 caracteres (16 registradores de 16 bits)
+    
     if (field.stride == 1) {
         // Caso simples: os caracteres estão em registradores consecutivos
-        if (!readHoldingRegister(field.address, (uint16_t*)value, field.length)) {
+        if (!readHoldingRegister(field.address, buffer, field.length)) {
             return false;
         }
-
-        value [field.length * 2] = '\0'; // Garantir terminação nula
-        return true;
+    } else {
+        for (uint16_t i = 0; i < field.length; i++) {
+            if (!readHoldingRegister(field.address + i * field.stride, &buffer[i], 1)) {
+                return false;
+            }
+        }
     }
+
+    uint16_t charIndex = 0;
 
     for (uint16_t i = 0; i < field.length; i++) {
-        if (!readHoldingRegister(field.address + i * field.stride, (uint16_t*)(value + i * 2), 1)) {
-            return false;
+        char high = (char)(buffer[i] >> 8);
+        char low  = (char)(buffer[i] & 0xFF);
+
+        // Para no caractere nulo
+        //if (high == '\0') break;
+        if (high >= 32 && high <= 126) {
+            value[charIndex++] = high;
+        }
+
+        //if (low == '\0') break;
+        if (low >= 32 && low <= 126) {
+            value[charIndex++] = low;
         }
     }
 
-    value[field.length * 2] = '\0'; // Garantir terminação nula
-    return true;
+    value[charIndex] = '\0'; // Garantir terminação nula
+    return charIndex > 0; // Retorna true se pelo menos um caractere válido foi lido
 }
 
 bool Inverter::readField(const ModbusField& field, float& value) {
@@ -579,15 +597,21 @@ bool Inverter::readField(const ModbusField& field, PhaseData& data) {
 
 bool Inverter::readHoldingRegister(uint16_t startReg, uint16_t* buffer, uint16_t count) {
     if (_mb == nullptr || _modbus == nullptr) return false;
-    if (buffer == nullptr) return false;
-    if (count == 0) return false;
+    //if (buffer == nullptr) return false;
+    //if (count == 0) return false;
 
     _mb_done = false;
     _mb_success = false;
 
-    if (!_mb->readHreg(_modbus->getId(), startReg, buffer, count, _mb_cb)) {
-        return false;
+    bool requestAccepted = _mb->readHreg(_modbus->getId(), startReg, buffer, count, _mb_cb);
+
+    if (!requestAccepted) {
+        return false; // Não conseguiu enviar
     }
+
+    /*if (!_mb->readHreg(_modbus->getId(), startReg, buffer, count, _mb_cb)) {
+        return false;
+    }*/
 
     uint32_t start = millis();
 
@@ -596,7 +620,15 @@ bool Inverter::readHoldingRegister(uint16_t startReg, uint16_t* buffer, uint16_t
         yield();
     }
 
-    return _mb_success;
+    if (!_mb_done) {
+        return false; // Timeout
+    }
+
+    if (!_mb_success) {
+        return false; // Erro na resposta
+    }
+
+    return true;
 }
 
 bool Inverter::writeHoldingRegister(uint16_t startReg, uint16_t buffer, uint16_t count) {

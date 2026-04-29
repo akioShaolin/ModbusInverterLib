@@ -132,6 +132,9 @@ public:
     bool getEPSCurrent(PhaseData& phase);            // RO - Retorna struct {grid,r,s,t}
     bool getEPSActivePower(PhaseData& phase);        // RO - Retorna struct {grid,r,s,t}
 
+
+    bool readHoldingRegister(uint16_t reg, uint16_t* value, uint16_t count = 1);
+    bool writeHoldingRegister(uint16_t reg, uint16_t value, uint16_t count = 1);    
 private:
     ModbusRTU* _mb = nullptr;
     ModbusConfig* _modbus = nullptr;
@@ -152,8 +155,7 @@ private:
     bool readField(const ModbusField& field, StringValues& values);
     bool readField(const ModbusField& field, PhaseData& data);
 
-    bool readHoldingRegister(uint16_t reg, uint16_t* value, uint16_t count = 1);
-    bool writeHoldingRegister(uint16_t reg, uint16_t value, uint16_t count = 1);
+
 };
 
 #endif

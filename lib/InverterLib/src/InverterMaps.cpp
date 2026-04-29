@@ -146,7 +146,7 @@ static const ModbusInverterMap map_SIW400 PROGMEM = {
 
     { 0x0352, U32, 1, 1, 1.0f, true, false },     // Active Power (W)
     INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
-    { 0x037d, U32, 1, 1, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x037D, U32, 1, 1, 0.001f, true, false },   // Reactive Power (kVAr)
     { 0x0376, U16, 1, 1, 0.001f, true, false },   // Power Factor
 
     { 0x0304, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
@@ -176,7 +176,7 @@ static const ModbusInverterMap map_SIW400G_T012_T025 PROGMEM = {};
 
 static const ModbusInverterMap map_SIW400G_T050_T100 PROGMEM = {
     // Identificação
-    { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    { 0x9C74, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
     { 0xA717, U16, 1, 1, 1.0f, true, true },     // Boot. CE - Shutdown, CF - Boot
     INVALID_FIELD,                               // Shutdown (Não disponível nesse modelo)
@@ -231,7 +231,7 @@ static const ModbusInverterMap map_SIW400G_T050_T100 PROGMEM = {
 
 static const ModbusInverterMap map_SIW400H_W10 PROGMEM = {
     // Identificação
-    { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    { 0x9C74, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
     { 0xA717, U16, 1, 1, 1.0f, true, true },     // Boot. CE - Shutdown, CF - Boot
     INVALID_FIELD,                               // Shutdown (Não disponível nesse modelo)
@@ -520,7 +520,7 @@ static const ModbusInverterMap map_T_G3_series PROGMEM = {};
 
 static const ModbusInverterMap map_H3P_series PROGMEM = {
     // Identificação
-    { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    { 0x9C74, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
     { 0xA717, U16, 1, 1, 1.0f, true, true },     // Boot. CE - Shutdown, CF - Boot
     INVALID_FIELD,                               // Shutdown (Não disponível nesse modelo)
@@ -575,7 +575,7 @@ static const ModbusInverterMap map_H3P_series PROGMEM = {
 
 static const ModbusInverterMap map_V_series PROGMEM = {
     // Identificação
-    { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    { 0x9C74, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
     { 0xA717, U16, 1, 1, 1.0f, true, true },     // Boot. CE - Shutdown, CF - Boot
     INVALID_FIELD,                               // Shutdown (Não disponível nesse modelo)
@@ -630,7 +630,7 @@ static const ModbusInverterMap map_V_series PROGMEM = {
 
 static const ModbusInverterMap map_R_series PROGMEM = {
     // Identificação
-    { 0x9C75, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    { 0x9C74, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
     { 0xA717, U16, 1, 1, 1.0f, true, true },     // Boot. CE - Shutdown, CF - Boot
     INVALID_FIELD,                               // Shutdown (Não disponível nesse modelo)
@@ -771,7 +771,7 @@ static const ModbusInverterMap map_GOODWE_MT_ONLY PROGMEM = {
 
     { 0x0352, U32, 1, 1, 1.0f, true, false },     // Active Power (W)
     INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
-    { 0x037d, U32, 1, 1, 0.001f, true, false },   // Reactive Power (kVAr)
+    { 0x037D, U32, 1, 1, 0.001f, true, false },   // Reactive Power (kVAr)
     { 0x0376, U16, 1, 1, 0.001f, true, false },   // Power Factor
 
     { 0x0304, U16, 3, 1, 0.1f, true, false },     // Grid Voltage R, S, T (V)
