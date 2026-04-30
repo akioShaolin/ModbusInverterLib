@@ -10,7 +10,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ModbusRTU.h>
-#include <Inverter.h>
+#include <InverterLib.h>
 
 #define DE_RE_PIN 12  // Defina o pino DE_RE
 

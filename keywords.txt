@@ -1,0 +1,89 @@
+# Syntax Coloring Map For inverterLib
+
+# Classes (KEYWORD1)
+Inverter    KEYWORD1
+InverterModel   KEYWORD1
+InverterDescriptor  KEYWORD1
+ModbusConfig    KEYWORD1
+ModbusInverterMap   KEYWORD1
+ModbusField KEYWORD1
+
+
+# Métodos and Functions (KEYWORD2)
+attachModbus    KEYWORD2
+attachConfig    KEYWORD2
+begin   KEYWORD2
+getSerial   KEYWORD2
+boot    KEYWORD2
+setBoot KEYWORD2
+shutdown    KEYWORD2
+setPowerLimitEnabled    KEYWORD2
+setPowerLimit   KEYWORD2
+setPowerLimitPercent    KEYWORD2
+setExportLimitEnabled   KEYWORD2
+setExportLimit  KEYWORD2
+setExportLimitPercent   KEYWORD2
+setPowerFactorEnabled   KEYWORD2
+setPowerFactor  KEYWORD2
+isBooted    KEYWORD2
+isPowerLimitEnabled KEYWORD2
+getPowerLimit   KEYWORD2
+getPowerLimitPercent    KEYWORD2
+isExportLimitEnabled    KEYWORD2
+getExportLimit  KEYWORD2
+getExportLimitPercent   KEYWORD2
+isPowerFactorEnabled    KEYWORD2
+getPowerFactorSetpoint  KEYWORD2
+getYear KEYWORD2
+getMonth    KEYWORD2
+getDay  KEYWORD2
+getHour KEYWORD2
+getMinute   KEYWORD2
+getSecond   KEYWORD2
+getEpochTime    KEYWORD2
+setYear KEYWORD2
+setMonth    KEYWORD2
+setDay  KEYWORD2
+setHour KEYWORD2
+setMinute   KEYWORD2
+setSecond   KEYWORD2
+setEpochTime    KEYWORD2
+getTotalEnergy  KEYWORD2
+getDailyEnergy  KEYWORD2
+getActivePower  KEYWORD2
+getReactivePower    KEYWORD2
+getApparentPower    KEYWORD2
+getPowerFactor  KEYWORD2
+getGridVoltage  KEYWORD2
+getGridCurrent  KEYWORD2
+getGridFrequency    KEYWORD2
+getTemperature  KEYWORD2
+getInsulationResistance KEYWORD2
+getInverterStatus   KEYWORD2
+getAlarm    KEYWORD2
+getStringVoltage    KEYWORD2
+getStringCurrent    KEYWORD2
+getStringPower  KEYWORD2
+getBatteryVoltage   KEYWORD2
+getBatteryCurrent   KEYWORD2
+getBatteryPower KEYWORD2
+getBatterySoC   KEYWORD2
+getBatterySoH   KEYWORD2
+getEPSVoltage   KEYWORD2
+getEPSCurrent   KEYWORD2
+getEPSActivePower   KEYWORD2
+readField   KEYWORD2
+readField16Raw  KEYWORD2
+readField32Raw  KEYWORD2
+readField64Raw  KEYWORD2
+readHoldingRegister KEYWORD2
+writeHoldingRegister    KEYWORD2
+
+# Constants and Macros (LITERAL1)
+MAX_STRINGS	LITERAL1
+MAX_BATTERIES	LITERAL1
+INV_MAX_U16_VALUES  LITERAL1
+INV_MAX_U32_VALUES  LITERAL1
+INV_MAX_U64_VALUES  LITERAL1
+INV_MAX_FLOAT_VALUES    LITERAL1
+INV_MAX_STRING_CHARS    LITERAL1

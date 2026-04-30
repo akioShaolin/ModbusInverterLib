@@ -10,7 +10,7 @@ A proposta é permitir que desenvolvedores interajam com inversores sem precisar
 
 ---
 
-### Objetivos
+### 🎯 Objetivos
 
 * Padronizar leitura e escrita de dados via Modbus
 * Suportar múltiplos fabricantes e modelos
@@ -83,6 +83,13 @@ Caso queira colaborar ou fornecer documentação:
 
 * Abra uma issue
 * Entre em contato diretamente
+
+---
+
+### 📦 Dependências
+
+Esta biblioteca utiliza a biblioteca ModbusRTU desenvolvida por Emelianov,
+licenciada sob a BSD 3-Clause License.
 
 ---
 
@@ -176,6 +183,13 @@ If you are willing to collaborate or share documentation:
 
 * Open an issue
 * Reach out directly
+
+---
+
+### 📦 Dependencies
+
+This library depends on the ModbusRTU library by Emelianov,
+licensed under the BSD 3-Clause License.
 
 ---
 

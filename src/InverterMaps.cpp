@@ -1,3 +1,12 @@
+/*
+ * inverterLib - Solar Inverter Library for Arduino
+ * ------------------------------------------------
+ * Modbus RTU (RS485)communication layer for inverter integration
+ *
+ * Copyright (c) 2026, Pedro Akio Sakuma
+ * Licensed under BSD 3-Clause License
+ */
+
 #include "InverterMaps.h"
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -597,7 +606,7 @@ static const ModbusInverterMap map_V_series PROGMEM = {
     { 0xA715, U16, 1, 1, 1.0f, true, false },     // Time Second
     INVALID_FIELD,                                // Time Epoch (não disponível nesse modelo)
     // Status
-    { 0x9C95, U64, 1, 4, 100.0f, true, false },   // Total Energy (Wh)
+    { 0x9C95, U64, 1, 4, 0.1f, true, false },     // Total Energy (kWh)
     INVALID_FIELD,                                // Daily Energy (Wh) (não disponível nesse modelo)    
 
     { 0x9C8F, I16, 1, 1, 100.0f, true, false },   // Active Power (kW)
@@ -652,7 +661,7 @@ static const ModbusInverterMap map_R_series PROGMEM = {
     { 0xA715, U16, 1, 1, 1.0f, true, false },     // Time Second
     INVALID_FIELD,                                // Time Epoch (não disponível nesse modelo)
     // Status
-    { 0x9C95, U64, 1, 4, 100.0f, true, false },   // Total Energy (Wh)
+    { 0x9C95, U64, 1, 4, 0.1f, true, false },     // Total Energy (kWh)
     INVALID_FIELD,                                // Daily Energy (Wh) (não disponível nesse modelo)    
 
     { 0x9C8F, I16, 1, 1, 100.0f, true, false },   // Active Power (kW)

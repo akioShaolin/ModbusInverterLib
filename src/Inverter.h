@@ -1,3 +1,12 @@
+/*
+ * inverterLib - Solar Inverter Library for Arduino
+ * ------------------------------------------------
+ * Modbus RTU (RS485)communication layer for inverter integration
+ *
+ * Copyright (c) 2026, Pedro Akio Sakuma
+ * Licensed under BSD 3-Clause License
+ */
+
 #ifndef INVERTER_H
 #define INVERTER_H
 
@@ -6,6 +15,12 @@
 #include "InverterMaps.h"
 #include "InverterDescriptor.h"
 #include "InverterModels.h"
+
+constexpr uint8_t INV_MAX_U16_VALUES =   28;
+constexpr uint8_t INV_MAX_U32_VALUES =   3;
+constexpr uint8_t INV_MAX_U64_VALUES =   1;
+constexpr uint8_t INV_MAX_FLOAT_VALUES = 3;
+constexpr uint8_t INV_MAX_STRING_CHARS = 32;
 
 /*enum A{
     AVERAGE,
@@ -52,19 +67,19 @@ struct BatteryValues {
 
 class Inverter {
 public:
-    void attachModbus(ModbusRTU& mb);
-    void attachConfig(ModbusConfig& config);
+    void attachModbus(ModbusRTU& mb);               // ✓
+    void attachConfig(ModbusConfig& config);        // ✓
 
-    Inverter(InverterModel model);
+    Inverter(InverterModel model);                  // ✓
 
-    bool begin();
+    bool begin();                                   // ✓
 
     // Identificação
-    bool getSerial(String& serial);                  // RO retorna uma string contendo o numero serial
+    bool getSerial(String& serial);                  // RO retorna uma string contendo o numero serial  ✓
     // Controle
-    bool boot();                                     // WO
-    bool setBoot(bool boot);                         // WO - true para ligar, false para desligar WO
-    bool shutdown();                                 // WO
+    bool boot();                                     // WO ✓
+    bool setBoot(bool boot);                         // WO - true para ligar, false para desligar WO ✓
+    bool shutdown();                                 // WO ✓
     bool setPowerLimitEnabled(bool enabled);         // WO
     bool setPowerLimit(float watts);                 // WO
     bool setPowerLimitPercent(float percent);        // WO
@@ -132,9 +147,6 @@ public:
     bool getEPSCurrent(PhaseData& phase);            // RO - Retorna struct {grid,r,s,t}
     bool getEPSActivePower(PhaseData& phase);        // RO - Retorna struct {grid,r,s,t}
 
-
-    bool readHoldingRegister(uint16_t reg, uint16_t* value, uint16_t count = 1);
-    bool writeHoldingRegister(uint16_t reg, uint16_t value, uint16_t count = 1);    
 private:
     ModbusRTU* _mb = nullptr;
     ModbusConfig* _modbus = nullptr;
@@ -146,16 +158,30 @@ private:
     String _serial;
 
     // Resolve 90% dos casos
-    bool readField(const ModbusField& field, char* value);
-    bool readField(const ModbusField& field, float& value);
-    bool readField(const ModbusField& field, uint16_t& value);
-    bool readField(const ModbusField& field, uint32_t& value);
-    bool readField(const ModbusField& field, int16_t& value);
-    bool readField(const ModbusField& field, int32_t& value);
-    bool readField(const ModbusField& field, StringValues& values);
-    bool readField(const ModbusField& field, PhaseData& data);
+    bool readField(const ModbusField& field, char* value);                  // ✓
+    bool readField(const ModbusField& field, float* value);                 // ✓
+    bool readField(const ModbusField& field, uint16_t* value);              // ✓
+    bool readField(const ModbusField& field, uint32_t* value);              // ✓
+    bool readField(const ModbusField& field, uint64_t* value);              // ✓
+    bool readField(const ModbusField& field, int16_t* value);               // ✓
+    bool readField(const ModbusField& field, int32_t* value);               // ✓
+    bool readField(const ModbusField& field, int64_t* value);               // ✓
 
+    bool readField16Raw(const ModbusField& field, uint16_t* buffer);        // ✓
+    bool readField32Raw(const ModbusField& field, uint32_t* buffer);        // ✓
+    bool readField64Raw(const ModbusField& field, uint64_t* buffer);        // ✓
 
+    bool writeField(const ModbusField& field, float* value, uint8_t count = 1); // 
+    bool writeField(const ModbusField& field, uint16_t* value, uint8_t count = 1);       // 
+    bool writeField(const ModbusField& field, uint32_t* value, uint8_t count = 1);       // 
+    bool writeField(const ModbusField& field, int16_t* value, uint8_t count = 1);        // 
+    bool writeField(const ModbusField& field, int32_t* value, uint8_t count = 1);        // 
+
+    bool writeField16Raw(const ModbusField& field, uint16_t* value, uint8_t count = 1);  // 
+    bool writeField32Raw(const ModbusField& field, uint32_t* value, uint8_t count = 1);  // 
+
+    bool readHoldingRegister(uint16_t reg, uint16_t* value, uint16_t count = 1);    // ✓
+    bool writeHoldingRegister(uint16_t reg, uint16_t* value, uint16_t count = 1);    
 };
 
 #endif
