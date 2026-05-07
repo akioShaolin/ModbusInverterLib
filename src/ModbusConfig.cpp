@@ -9,25 +9,20 @@
 
 #include "ModbusConfig.h"
 
+#define DEFAULT_TIMEOUT 1000
+
+static uint32_t _activeBaud = 0;
+static SerialConfig _activeSerialConfig = SERIAL_8N1;
+static int8_t _activeDeRePin = -2;
+static bool _initialized = false;
+
 ModbusConfig::ModbusConfig(uint8_t id, uint32_t baud, SerialConfig config) 
     :_id(id),
     _baud(baud),
     _serialConfig(config),
     _deRePin(-1),
-    _timeout(1000)
+    _timeout(DEFAULT_TIMEOUT)
 {}
-
-void ModbusConfig::applyTo(ModbusRTU& mb, HardwareSerial& serial) {
-    // Não iniciar o modbus e o serial varias vezes. Ajustar isso aqui depois
-    serial.begin(_baud, _serialConfig);
-
-    if (_deRePin >= 0) {
-        mb.begin(&serial, _deRePin);
-    } else {
-        mb.begin(&serial);
-    }
-
-}
 
 void ModbusConfig::setConfig(uint8_t id, uint32_t baud) {
     _id = id;
@@ -83,3 +78,37 @@ int8_t ModbusConfig::getDeRePin() const {
 uint16_t ModbusConfig::getTimeout() const {
     return _timeout;
 }
+
+bool ModbusConfig::ensureApplied(ModbusRTU& mb, HardwareSerial& serial) {
+
+    bool changed =
+        !_initialized ||
+        _baud != _activeBaud ||
+        _serialConfig != _activeSerialConfig ||
+        _deRePin != _activeDeRePin;
+
+    if (!changed) {
+        return true;
+    }
+    
+    serial.flush();
+
+    serial.begin(_baud, _serialConfig);
+
+    if (_deRePin >= 0) {
+        mb.begin(&serial, _deRePin);
+    } else {
+        mb.begin(&serial);
+    }
+
+    mb.master();
+
+    _activeBaud = _baud;
+    _activeSerialConfig = _serialConfig;
+    _activeDeRePin = _deRePin;
+    _initialized = true;
+
+    delay(2);
+
+    return true;
+ }

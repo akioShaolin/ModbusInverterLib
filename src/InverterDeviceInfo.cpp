@@ -67,27 +67,27 @@ InverterDeviceInfo.cpp
 // Identification
 // ======================================================
 
-bool Inverter::getSerial(String& serial) {
-    if (_map.serial.address == 0xFFFF) return false;
+bool Inverter::getSerialNumber(String& serialNumber) {
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
-    switch (_map.serial.mode) {
+    switch (_map.serialNumber.mode) {
 
         case FIELD_SIMPLE:
-            if (!_map.serial.readable) return false;
-            if (_map.serial.type == ASCII) {
+            if (!_map.serialNumber.readable) return false;
+            if (_map.serialNumber.type == ASCII) {
                 char buffer[INV_MAX_STRING_CHARS + 1];
                 // Supondo que o número serial tenha no máximo 32 caracteres, mais um para o terminador nulo
-                if (!readField(_map.serial, buffer)) return false;
+                if (!readField(_map.serialNumber, buffer)) return false;
                 
-                serial = String(buffer);
+                serialNumber = String(buffer);
                 return true;                
             }
             
-            if (_map.serial.type == U32) {
+            if (_map.serialNumber.type == U32) {
                 uint32_t buffer; // Ler um valor de 32 bits
-                if (!readField(_map.serial, &buffer)) return false;
+                if (!readField(_map.serialNumber, &buffer)) return false;
 
-                serial = String(buffer); // Transforma o número em string
+                serialNumber = String(buffer); // Transforma o número em string
                 return true;
             }
             return false;
@@ -102,7 +102,7 @@ bool Inverter::getSerial(String& serial) {
 // ======================================================
 
 bool Inverter::isBooted(bool& isBooted) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.bootMode == nullptr) return false;
 
     switch (_map.boot.mode) {
@@ -137,7 +137,7 @@ bool Inverter::isBooted(bool& isBooted) {
 }
 
 bool Inverter::isPowerLimitEnabled(bool& enabled) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.enablePowerLimit.mode) {
 
@@ -156,7 +156,7 @@ bool Inverter::isPowerLimitEnabled(bool& enabled) {
 }
 
 bool Inverter::getPowerLimit(float& watts) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.PowerLimit.mode) {
@@ -181,7 +181,7 @@ bool Inverter::getPowerLimit(float& watts) {
 }
 
 bool Inverter::getPowerLimitPercent(float& percent) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.PowerLimitPercent.mode) {
@@ -207,7 +207,7 @@ bool Inverter::getPowerLimitPercent(float& percent) {
 }
 
 bool Inverter::isExportLimitEnabled(bool& enabled) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.exportLimitMode == nullptr) return false;
 
     switch (_map.enableExportLimit.mode) {
@@ -239,7 +239,7 @@ bool Inverter::isExportLimitEnabled(bool& enabled) {
 }
 
 bool Inverter::getExportLimit(float& watts) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.ExportLimit.mode) {
@@ -264,7 +264,7 @@ bool Inverter::getExportLimit(float& watts) {
 }
 
 bool Inverter::getExportLimitPercent(float& percent) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.ExportLimitPercent.mode) {
@@ -290,7 +290,7 @@ bool Inverter::getExportLimitPercent(float& percent) {
 }
 
 bool Inverter::isPowerFactorEnabled(bool& enabled) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.enablePowerFactor.mode) {
 
@@ -309,7 +309,7 @@ bool Inverter::isPowerFactorEnabled(bool& enabled) {
 }
 
 bool Inverter::getPowerFactorSetpoint(float& pf) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     switch (_map.PowerFactorSetpoint.mode) {
 
@@ -340,7 +340,7 @@ bool Inverter::getPowerFactorSetpoint(float& pf) {
 // ======================================================
 
 bool Inverter::getActivePower(float& watts) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.activePower.mode) {
 
@@ -354,7 +354,7 @@ bool Inverter::getActivePower(float& watts) {
 }
    
 bool Inverter::getReactivePower(float& voltAmperReactive) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.reactivePower.mode) {
 
@@ -368,7 +368,7 @@ bool Inverter::getReactivePower(float& voltAmperReactive) {
 }
 
 bool Inverter::getApparentPower(float& voltAmper) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.apparentPower.mode) {
 
@@ -382,7 +382,7 @@ bool Inverter::getApparentPower(float& voltAmper) {
 }
 
 bool Inverter::getPowerFactor(float &pf) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.powerFactor.mode) {
 
@@ -410,7 +410,7 @@ bool Inverter::getPowerFactor(float &pf) {
 }
 
 bool Inverter::getGridVoltage(PhaseData& phase) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.gridVoltage.mode) {
 
@@ -439,7 +439,7 @@ bool Inverter::getGridVoltage(PhaseData& phase) {
 }
 
 bool Inverter::getGridCurrent(PhaseData& phase) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.gridCurrent.mode) {
 
@@ -468,7 +468,7 @@ bool Inverter::getGridCurrent(PhaseData& phase) {
 }
 
 bool Inverter::getGridFrequency(PhaseData& phase) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.gridFrequency.mode) {
 
@@ -501,7 +501,7 @@ bool Inverter::getGridFrequency(PhaseData& phase) {
 // ======================================================
 
 bool Inverter::getTotalEnergy(float& kWh) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.totalEnergy.mode) {
 
@@ -515,7 +515,7 @@ bool Inverter::getTotalEnergy(float& kWh) {
 }
 
 bool Inverter::getDailyEnergy(float& kWh) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.dailyEnergy.mode) {
 
@@ -533,7 +533,7 @@ bool Inverter::getDailyEnergy(float& kWh) {
 // ======================================================
 
 bool Inverter::getStringVoltage(StringValues& voltage) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.stringVoltage.mode) {
 
@@ -560,7 +560,7 @@ bool Inverter::getStringVoltage(StringValues& voltage) {
 }
 
 bool Inverter::getStringCurrent(StringValues& current) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.stringCurrent.mode) {
 
@@ -587,7 +587,7 @@ bool Inverter::getStringCurrent(StringValues& current) {
 }
 
 bool Inverter::getStringPower(StringValues& power) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.stringPower.mode) {
 
@@ -618,7 +618,7 @@ bool Inverter::getStringPower(StringValues& power) {
 // ======================================================
 
 bool Inverter::getBatteryVoltage(BatteryValues& voltage) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.batteryInfo.batteryCount == 0) return false;
     
     switch (_map.batteryVoltage.mode) {
@@ -646,7 +646,7 @@ bool Inverter::getBatteryVoltage(BatteryValues& voltage) {
 }
 
 bool Inverter::getBatteryCurrent(BatteryValues& current) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.batteryInfo.batteryCount == 0) return false;
     
     switch (_map.batteryCurrent.mode) {
@@ -674,7 +674,7 @@ bool Inverter::getBatteryCurrent(BatteryValues& current) {
 }
 
 bool Inverter::getBatteryPower(BatteryValues& power) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.batteryInfo.batteryCount == 0) return false;
     
     switch (_map.batteryPower.mode) {
@@ -702,7 +702,7 @@ bool Inverter::getBatteryPower(BatteryValues& power) {
 }
 
 bool Inverter::getBatterySoC(BatteryValues& soc) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.batteryInfo.batteryCount == 0) return false;
     
     switch (_map.batterySoC.mode) {
@@ -730,7 +730,7 @@ bool Inverter::getBatterySoC(BatteryValues& soc) {
 }
 
 bool Inverter::getBatterySoH(BatteryValues& soh) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.batteryInfo.batteryCount == 0) return false;
     
     switch (_map.batterySoH.mode) {
@@ -762,7 +762,7 @@ bool Inverter::getBatterySoH(BatteryValues& soh) {
 // ======================================================
 
 bool Inverter::getEPSVoltage(PhaseData& phase) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.epsPhaseType == NO_EPS) return false;
     
     switch (_map.epsVoltage.mode) {
@@ -792,7 +792,7 @@ bool Inverter::getEPSVoltage(PhaseData& phase) {
 }
 
 bool Inverter::getEPSCurrent(PhaseData& phase) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.epsPhaseType == NO_EPS) return false;
     
     switch (_map.epsCurrent.mode) {
@@ -822,7 +822,7 @@ bool Inverter::getEPSCurrent(PhaseData& phase) {
 }
 
 bool Inverter::getEPSActivePower(PhaseData& phase) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.epsPhaseType == NO_EPS) return false;
     
     switch (_map.epsActivePower.mode) {
@@ -856,7 +856,7 @@ bool Inverter::getEPSActivePower(PhaseData& phase) {
 // ======================================================
 
 bool Inverter::getTemperature(float& temperature) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     
     switch (_map.temperature.mode) {
@@ -871,7 +871,7 @@ bool Inverter::getTemperature(float& temperature) {
 }
 
 bool Inverter::getInsulationResistance(float& kiloOhms) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     
     switch (_map.insulationResistance.mode) {
@@ -896,7 +896,7 @@ bool Inverter::getInsulationResistance(float& kiloOhms) {
 
 // #############################################################################################################
 bool Inverter::getInverterStatus(InverterStatus& status) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.inverterStatus.mode) {
 
@@ -917,7 +917,7 @@ bool Inverter::getInverterStatus(InverterStatus& status) {
 }
 
 bool Inverter::getAlarm(Alarm& alarm) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.alarm.mode) {
 

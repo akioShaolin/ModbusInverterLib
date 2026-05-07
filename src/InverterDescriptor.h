@@ -17,6 +17,13 @@
 constexpr uint8_t MAX_STRINGS = 28;
 constexpr uint8_t MAX_BATTERIES = 12;
 
+struct ModbusConfigData {
+    uint8_t id;
+    uint32_t baud;
+    SerialConfig serialConfig;
+    uint8_t deRePin = -1;
+};
+
 enum InverterPhaseType {
     NO_PHASED = 0x00,
     SINGLE_PHASE = 0x01,
@@ -86,7 +93,7 @@ struct InverterDescriptor {
     uint32_t nominalPowerW; // Potência máxima em watts, pode ser 0 se não for aplicável ou desconhecida
 
     // Comunicação
-    const ModbusConfig* config;
+    const ModbusConfigData* config;
 
     // Recursos disponíveis
     PVInfo pvInfo;

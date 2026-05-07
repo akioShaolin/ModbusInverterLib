@@ -12,6 +12,7 @@ InverterControl.cpp
 │   ├── Inverter()
 │   ├── attachModbus()
 │   ├── attachConfig()
+│   ├── attachSerial()
 │   ├── begin()
 │   └── setSlaveId()
 │
@@ -39,31 +40,49 @@ InverterControl.cpp
 // Begin and Setup
 // ======================================================
 
-Inverter::Inverter(InverterModel model) : _model(model), _modbus(1, 9600, SERIAL_8N1) {
+Inverter::Inverter(InverterModel model)
+  : _modbus(1, 9600, SERIAL_8N1),
+    _model(model),
+    _mb(nullptr),
+    _serialPort(&Serial) {
+
     _descriptor = getDescriptor(model);
     _map = getInverterMap(model);
+
+    if (_descriptor.config != nullptr) {
+        _cfg.id = pgm_read_byte(&_descriptor.config->id);
+        _cfg.baud = pgm_read_dword(&_descriptor.config->baud);
+        _cfg.serialConfig = (SerialConfig)pgm_read_dword(&_descriptor.config->serialConfig);
+    } else {
+        _cfg = {1, 9600, SERIAL_8N1};
+    }
 }
 
 void Inverter::attachModbus(ModbusRTU& mb) {
     _mb = &mb;
 }
 
-void Inverter::attachConfig(const ModbusConfig& config) {
-    _modbus = config;
-    _customConfigSet = true;
+void Inverter::attachConfig(const ModbusConfigData& config) {
+    memcpy(&_cfg, &config, sizeof(ModbusConfigData));
+}
+
+void Inverter::attachSerial(HardwareSerial& serial) {
+    _serialPort = &serial;
 }
 
 bool Inverter::begin() {
     if (_mb == nullptr) return false;
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;  //São campos obrigatórios. A falta deles invalida a struct
 
-    if (!_customConfigSet) {
-        if (_descriptor.config == nullptr) return false;
-        memcpy_P(&_modbus, _descriptor.config, sizeof(ModbusConfig));
-    }
+    _modbus.setConfig(
+        _cfg.id,
+        _cfg.baud,
+        _cfg.serialConfig,
+        _cfg.deRePin
+    );
 
-    getSerial(_serial);
+    getSerialNumber(_serialNumber);
     
     return true;
 }
@@ -79,7 +98,7 @@ void Inverter::setSlaveId(uint8_t id) {
 // Caso o inversor possua apenas um registrador para controle (boot/shutdown),
 // este deve ser mapeado em _map.boot, e não em _map.shutdown.
 bool Inverter::boot() {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.bootMode == nullptr) return false;
 
     uint16_t v = pgm_read_word(&_descriptor.bootMode->bootValue);
@@ -100,7 +119,7 @@ bool Inverter::setBoot(bool enable) {
 }
 
 bool Inverter::shutdown() {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.bootMode == nullptr) return false;
     
     uint16_t v = pgm_read_word(&_descriptor.bootMode->shutdownValue);
@@ -123,7 +142,7 @@ bool Inverter::shutdown() {
 }
 
 bool Inverter::setPowerLimitEnabled(bool enabled) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.enablePowerLimit.mode) {
 
@@ -137,7 +156,7 @@ bool Inverter::setPowerLimitEnabled(bool enabled) {
 }
 
 bool Inverter::setPowerLimit(float watts) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.PowerLimit.mode) {
@@ -159,7 +178,7 @@ bool Inverter::setPowerLimit(float watts) {
 }
 
 bool Inverter::setPowerLimitPercent(float percent) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.PowerLimitPercent.mode) {
@@ -181,7 +200,7 @@ bool Inverter::setPowerLimitPercent(float percent) {
 }
 
 bool Inverter::setExportLimitEnabled(bool enabled) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (!_map.enableExportLimit.writable) return false;
     if (_descriptor.exportLimitMode == nullptr) return false;
     
@@ -203,7 +222,7 @@ bool Inverter::setExportLimitEnabled(bool enabled) {
 }
 
 bool Inverter::setExportLimit(float watts) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.ExportLimit.mode) {
@@ -225,7 +244,7 @@ bool Inverter::setExportLimit(float watts) {
 }
 
 bool Inverter::setExportLimitPercent(float percent) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (_descriptor.nominalPowerW == 0) return false;
 
     switch (_map.ExportLimitPercent.mode) {
@@ -247,7 +266,7 @@ bool Inverter::setExportLimitPercent(float percent) {
 }
 
 bool Inverter::setPowerFactorEnabled(bool enabled) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     switch (_map.enablePowerFactor.mode) {
     
@@ -261,7 +280,7 @@ bool Inverter::setPowerFactorEnabled(bool enabled) {
 }
 
 bool Inverter::setPowerFactor(float pf) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (pf <= -1.0f || pf > 1.0f || pf == 0.0f) return false;
     if (isInvalidField(_map.PowerFactorSetpoint)) return false;
 
@@ -301,7 +320,7 @@ bool Inverter::setPowerFactor(float pf) {
 }
 
 bool Inverter::setPowerFactorExcitationMode(PfExcitationMode excitationMode) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (isInvalidField(_map.powerFactorExcitationMode)) return false;
     
     uint16_t mode = 0;

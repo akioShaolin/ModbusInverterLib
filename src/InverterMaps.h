@@ -85,7 +85,7 @@ constexpr ModbusField INVALID_FIELD = { 0xFFFF, NONE, 0, 0, 1.0f, false, false, 
 
 struct ModbusInverterMap {
     // Identificação
-    ModbusField serial;
+    ModbusField serialNumber;
 
     // Controle
     ModbusField boot;

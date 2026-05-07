@@ -114,22 +114,23 @@ public:
     // Setters
     // Arquivo InverterControl.cpp
     // ------------------------------------------------------
-    Inverter(InverterModel model);                   //
-    void attachModbus(ModbusRTU& mb);                //
-    void attachConfig(const ModbusConfig& config);   //  
-    bool begin();                                    //
-    void setSlaveId(uint8_t id);                     //
-    bool boot();                                     //
-    bool setBoot(bool enable);                       //
-    bool shutdown();                                 //
-    bool setPowerLimitEnabled(bool enabled);         //
-    bool setPowerLimit(float watts);                 //
-    bool setPowerLimitPercent(float percent);        //
-    bool setExportLimitEnabled(bool enabled);        //
-    bool setExportLimit(float watts);                //
-    bool setExportLimitPercent(float percent);       //
-    bool setPowerFactorEnabled(bool enabled);        //
-    bool setPowerFactor(float pf);                   //
+    Inverter(InverterModel model);                      //
+    void attachModbus(ModbusRTU& mb);                   //
+    void attachConfig(const ModbusConfigData& config);  //  
+    void attachSerial(HardwareSerial& serial);          //
+    bool begin();                                       //
+    void setSlaveId(uint8_t id);                        //
+    bool boot();                                        //
+    bool setBoot(bool enable);                          //
+    bool shutdown();                                    //
+    bool setPowerLimitEnabled(bool enabled);            //
+    bool setPowerLimit(float watts);                    //
+    bool setPowerLimitPercent(float percent);           //
+    bool setExportLimitEnabled(bool enabled);           //
+    bool setExportLimit(float watts);                   //
+    bool setExportLimitPercent(float percent);          //
+    bool setPowerFactorEnabled(bool enabled);           //
+    bool setPowerFactor(float pf);                      //
     bool setPowerFactorExcitationMode(PfExcitationMode excitationMode); //
     // ------------------------------------------------------
   
@@ -160,7 +161,7 @@ public:
     // Arquivo InverterDeviceInfo.cpp
     // ------------------------------------------------------
     // Identificação
-    bool getSerial(String& serial);                  //
+    bool getSerialNumber(String& serialNumber);                  //
     // Comandos / Limites
     bool isBooted(bool& isBooted);                   //
     bool isPowerLimitEnabled(bool& enabled);         //
@@ -209,12 +210,13 @@ private:
     // Variáveis privadas
     // ------------------------------------------------------
     ModbusRTU* _mb = nullptr;                        //
+    ModbusConfigData _cfg;                           //
     ModbusConfig _modbus;                            //
-    bool _customConfigSet = false;                   //
+    HardwareSerial* _serialPort;                     //
     InverterModel _model;                            //
     InverterDescriptor _descriptor;                  //
     ModbusInverterMap _map;                          //
-    String _serial;                                  //
+    String _serialNumber;                            //
     // ------------------------------------------------------
 
     // Arquivo InverterControl.cpp

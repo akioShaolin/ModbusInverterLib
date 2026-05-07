@@ -4,6 +4,8 @@
 
 ### 📌 Sobre o projeto
 
+Partes da arquitetura, documentação e exemplos desta biblioteca foram desenvolvidas com auxílio de inteligência artificial para acelerar prototipagem, revisão e organização do código.
+
 Esta biblioteca tem como objetivo padronizar a comunicação Modbus com inversores fotovoltaicos de diferentes fabricantes, criando uma interface única, consistente e reutilizável.
 
 A proposta é permitir que desenvolvedores interajam com inversores sem precisar conhecer os detalhes específicos de cada mapa Modbus.
@@ -16,6 +18,19 @@ A proposta é permitir que desenvolvedores interajam com inversores sem precisar
 * Suportar múltiplos fabricantes e modelos
 * Facilitar integração com sistemas embarcados (ESP8266, ESP32, Arduino)
 * Reduzir retrabalho na implementação de novos inversores
+
+---
+
+## Recursos
+
+- Leitura de dados do inversor
+- Escrita de parâmetros
+- Suporte a múltiplos fabricantes/modelos
+- Suporte a múltiplos inversores no mesmo barramento
+- Configuração dinâmica de UART/Modbus
+- Compatível com ESP8266 e ESP32
+- Interface orientada a objetos
+- Exemplos com interface web
 
 ---
 
@@ -82,6 +97,9 @@ A biblioteca trata automaticamente as operações de boot e shutdown utilizando 
 • Valores de energia podem ser expostos como float para conveniência da API. (getTotalEnergy)
 • Para operações acumulativas de longo prazo, recomenda-se utilizar os valores brutos inteiros (uint32_t/int32_t) para evitar perda progressiva de precisão.
 • Em inversores monofásicos, apenas a fase r possui valor válido para leitura de tensão da rede. As fases s e t permanecem zeradas. Em inversores trifásicos que disponibilizam apenas um registrador de frequência, o valor válido será atribuído somente à fase r.
+- Alguns registradores podem variar entre firmwares/modelos.
+- Alguns fabricantes utilizam escalas e endianness diferentes.
+- O mapa Modbus ainda está em evolução e validação prática.
 
 ---
 

@@ -17,8 +17,6 @@ class ModbusConfig {
 public:
     ModbusConfig(uint8_t id, uint32_t baud, SerialConfig config);
 
-    void applyTo(ModbusRTU& mb, HardwareSerial& serial);
-
     void setConfig(uint8_t id, uint32_t baud);
     void setConfig(uint8_t id, uint32_t baud, SerialConfig config);
     void setConfig(uint8_t id, uint32_t baud, SerialConfig config, int8_t deRePin);
@@ -36,6 +34,10 @@ public:
     uint16_t getTimeout() const;
 
 private:
+    friend class Inverter;
+
+    bool ensureApplied(ModbusRTU& mb, HardwareSerial& serial);
+
     uint8_t _id;
     uint32_t _baud;
     SerialConfig _serialConfig;

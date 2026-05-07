@@ -42,7 +42,7 @@ Datetime datetime;
 // ======================================================
 
 bool Inverter::getDatetime(Datetime& dt) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
@@ -57,7 +57,7 @@ bool Inverter::getDatetime(Datetime& dt) {
 }
 
 bool Inverter::getYear(uint16_t& year) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_year.readable) {
         uint16_t y;
@@ -85,7 +85,7 @@ bool Inverter::getYear(uint16_t& year) {
 }
 
 bool Inverter::getMonth(uint16_t& month) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_month.readable) {
         uint16_t m;
@@ -113,7 +113,7 @@ bool Inverter::getMonth(uint16_t& month) {
 }
 
 bool Inverter::getDay(uint16_t& day) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_day.readable) {
         uint16_t d;
@@ -141,7 +141,7 @@ bool Inverter::getDay(uint16_t& day) {
 }
 
 bool Inverter::getHour(uint16_t& hour) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_hour.readable) {
         uint16_t h;
@@ -169,7 +169,7 @@ bool Inverter::getHour(uint16_t& hour) {
 }
 
 bool Inverter::getMinute(uint16_t& minute) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_minute.readable) {
         uint16_t m;
@@ -197,7 +197,7 @@ bool Inverter::getMinute(uint16_t& minute) {
 }
 
 bool Inverter::getSecond(uint16_t& second) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (_map.time_second.readable) {
         uint16_t s;
@@ -225,7 +225,7 @@ bool Inverter::getSecond(uint16_t& second) {
 }
 
 bool Inverter::getEpochTime(uint32_t& epoch) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
 
     if (!_map.time_epoch.readable) return false;
 
@@ -237,7 +237,7 @@ bool Inverter::getEpochTime(uint32_t& epoch) {
 // ======================================================
 
 bool Inverter::setDatetime(Datetime dt) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (!isValidDatetime(dt)) return false;
 
     if (_map.time_epoch.writable) {
@@ -250,7 +250,7 @@ bool Inverter::setDatetime(Datetime dt) {
 }
 
 bool Inverter::setYear(uint16_t year) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (year < 1970 || year > 2100) return false;
 
     // Caso 1: registrador direto
@@ -290,7 +290,7 @@ bool Inverter::setYear(uint16_t year) {
 }
 
 bool Inverter::setMonth(uint16_t month) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (month < 1 || month > 12) return false;
 
     // Caso 1: registrador direto
@@ -330,7 +330,7 @@ bool Inverter::setMonth(uint16_t month) {
 }
 
 bool Inverter::setDay(uint16_t day) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (day < 1 || day > 31) return false;
 
     // Caso 1: registrador direto
@@ -370,7 +370,7 @@ bool Inverter::setDay(uint16_t day) {
 }
 
 bool Inverter::setHour(uint16_t hour) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (hour > 23) return false;
 
     // Caso 1: registrador direto
@@ -410,7 +410,7 @@ bool Inverter::setHour(uint16_t hour) {
 }
 
 bool Inverter::setMinute(uint16_t minute) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (minute > 59) return false;
 
     // Caso 1: registrador direto
@@ -450,7 +450,7 @@ bool Inverter::setMinute(uint16_t minute) {
 }
 
 bool Inverter::setSecond(uint16_t second) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (second > 59) return false;
 
     // Caso 1: registrador direto
@@ -490,7 +490,7 @@ bool Inverter::setSecond(uint16_t second) {
 }
 
 bool Inverter::setEpochTime(uint32_t epoch) {
-    if (_map.serial.address == 0xFFFF) return false;
+    if (_map.serialNumber.address == 0xFFFF) return false;
     if (!_map.time_epoch.writable) return false;
 
     return writeField(_map.time_epoch, epoch);

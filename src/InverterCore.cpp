@@ -540,7 +540,13 @@ bool Inverter::writeField32Raw(const ModbusField& field, uint32_t* value, uint8_
 
 bool Inverter::readHoldingRegister(uint16_t startReg, uint16_t* buffer, uint16_t count) {
     if (_mb == nullptr) return false;
-    // Implementar EventCode para essa função
+    if (startReg == 0xFFFF) return false; // Proteção contra campo inválido
+    if ((uint32_t)startReg + count > 0x10000UL) return false; // Proteção contra overflow
+    if (buffer == nullptr) return false;
+    if (count == 0) return false;
+
+    if (!_modbus.ensureApplied(*_mb, *_serialPort)) return false;
+    // TODO: Implementar EventCode para essa função
 
     _mb_done = false;
     _mb_success = false;
@@ -571,6 +577,13 @@ bool Inverter::readHoldingRegister(uint16_t startReg, uint16_t* buffer, uint16_t
 
 bool Inverter::writeHoldingRegister(uint16_t startReg, uint16_t* buffer, uint16_t count) {
     if (_mb == nullptr) return false;
+    if (startReg == 0xFFFF) return false; // Proteção contra campo inválido
+    if ((uint32_t)startReg + count > 0x10000UL) return false; // Proteção contra overflow
+    if (buffer == nullptr) return false;
+    if (count == 0) return false;
+
+    if (!_modbus.ensureApplied(*_mb, *_serialPort)) return false;
+    // TODO: Implementar EventCode para essa função
 
     _mb_done = false;
     _mb_success = false;
