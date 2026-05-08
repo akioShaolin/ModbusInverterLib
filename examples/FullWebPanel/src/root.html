@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>InverterModbusLib - Web Panel</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            color: #222;
+        }
+
+        header {
+            background: #0b3d5c;
+            color: white;
+            padding: 16px 20px;
+        }
+
+        header h1 {
+            font-size: 22px;
+            margin: 0 0 10px 0;
+        }
+
+        nav a {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            background: #1565c0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-right: 8px;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 18px;
+        }
+
+        .status {
+            background: #fff;
+            border-left: 5px solid #1565c0;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, .08);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+        }
+
+        .card h2 {
+            font-size: 17px;
+            margin: 0 0 10px 0;
+            color: #0b3d5c;
+        }
+
+        form {
+            margin: 0 0 10px 0;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 9px;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        button,
+        .btn {
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+            border: 0;
+            border-radius: 8px;
+            background: #1565c0;
+            color: white;
+            padding: 10px 12px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .danger button {
+            background: #b3261e;
+        }
+
+        .toggle button {
+            background: #5b2da0;
+        }
+
+        .display {
+            background: #eef3f7;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 42px;
+            line-height: 1.45;
+            margin-top: 10px;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .ok {
+            border-left: 5px solid #16833a;
+        }
+
+        .fail {
+            border-left: 5px solid #b3261e;
+        }
+
+        .small {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media(max-width:700px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>InverterModbusLib - Web Panel</h1>
+        <nav><a href='/'>Painel</a><a href='/config'>Configuração</a></nav>
+    </header>
+    <div class='wrap'>
+        <div class='status'><b>Modelo ativo:</b> SIW200_M030<br><b>Slave ID:</b> 1 | <b>Baud:</b> 9600 | <b>Serial:</b>
+            SERIAL_8N1 | <b>DE/RE:</b> GPIO 12<div class='small'>Use a página de configuração para alterar modelo, ID e
+                parâmetros Modbus/UART.</div>
+        </div>
+        <div class='grid'>
+            <div class='card'>
+                <h2>Identificação</h2>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getSerialNumber'><button
+                        type='submit'>Ler número serial</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+            </div>
+            <div class='card'>
+                <h2>Leituras - Controle e Limites</h2>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='isBooted'><button
+                        type='submit'>isBooted</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='isPowerLimitEnabled'><button
+                        type='submit'>isPowerLimitEnabled</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getPowerLimit'><button
+                        type='submit'>getPowerLimit</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getPowerLimitPercent'><button
+                        type='submit'>getPowerLimitPercent</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='isExportLimitEnabled'><button
+                        type='submit'>isExportLimitEnabled</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getExportLimit'><button
+                        type='submit'>getExportLimit</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getExportLimitPercent'><button
+                        type='submit'>getExportLimitPercent</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='isPowerFactorEnabled'><button
+                        type='submit'>isPowerFactorEnabled</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getPowerFactorSetpoint'><button
+                        type='submit'>getPowerFactorSetpoint</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+            </div>
+            <div class='card'>
+                <h2>Escritas - Controle e Limites</h2>
+                <form action='/set' method='GET'><input type='hidden' name='fn' value='boot'><button
+                        type='submit'>boot()</button></form>
+                <div class='danger'>
+                    <form action='/set' method='GET'><input type='hidden' name='fn' value='shutdown'><button
+                            type='submit'>shutdown()</button></form>
+                </div>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setBoot'><label>Estado</label><select name='value'>
+                        <option value='1'>true / habilitar</option>
+                        <option value='0'>false / desabilitar</option>
+                    </select><button type='submit'>setBoot</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setPowerLimitEnabled'><label>Estado</label><select name='value'>
+                        <option value='1'>true / habilitar</option>
+                        <option value='0'>false / desabilitar</option>
+                    </select><button type='submit'>setPowerLimitEnabled</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn' value='setPowerLimit'><label>Valor
+                        (W)</label><input type='number' step='0.001' name='value' placeholder='3000'><button
+                        type='submit'>setPowerLimit</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setPowerLimitPercent'><label>Valor (%)</label><input type='number' step='0.001'
+                        name='value' placeholder='80'><button type='submit'>setPowerLimitPercent</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setExportLimitEnabled'><label>Estado</label><select name='value'>
+                        <option value='1'>true / habilitar</option>
+                        <option value='0'>false / desabilitar</option>
+                    </select><button type='submit'>setExportLimitEnabled</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn' value='setExportLimit'><label>Valor
+                        (W)</label><input type='number' step='0.001' name='value' placeholder='1000'><button
+                        type='submit'>setExportLimit</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setExportLimitPercent'><label>Valor (%)</label><input type='number' step='0.001'
+                        name='value' placeholder='10'><button type='submit'>setExportLimitPercent</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setPowerFactorEnabled'><label>Estado</label><select name='value'>
+                        <option value='1'>true / habilitar</option>
+                        <option value='0'>false / desabilitar</option>
+                    </select><button type='submit'>setPowerFactorEnabled</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn' value='setPowerFactor'><label>Valor
+                        (PF)</label><input type='number' step='0.001' name='value' placeholder='0.98'><button
+                        type='submit'>setPowerFactor</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setPowerFactorExcitationMode'><label>Modo de excitação</label><select name='value'>
+                        <option value='0'>LAGGING</option>
+                        <option value='1'>LEADING</option>
+                        <option value='2'>INDUCTIVE</option>
+                        <option value='3'>CAPACITIVE</option>
+                        <option value='4'>OVER_EXCITED</option>
+                        <option value='5'>UNDER_EXCITED</option>
+                    </select><button type='submit'>setPowerFactorExcitationMode</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+            </div>
+            <div class='card'>
+                <h2>Leituras - Data/Hora</h2>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getDatetime'><button
+                        type='submit'>getDatetime</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getYear'><button
+                        type='submit'>getYear</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getMonth'><button
+                        type='submit'>getMonth</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getDay'><button
+                        type='submit'>getDay</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getHour'><button
+                        type='submit'>getHour</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getMinute'><button
+                        type='submit'>getMinute</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getSecond'><button
+                        type='submit'>getSecond</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+                <form action='/get' method='GET'><input type='hidden' name='fn' value='getEpochTime'><button
+                        type='submit'>getEpochTime</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+            </div>
+            <div class='card'>
+                <h2>Escritas - Data/Hora</h2>
+                <form action='/set' method='GET'><input type='hidden' name='fn' value='setDatetime'>
+                    <div class='row'>
+                        <div><label>Ano</label><input name='year' type='number' value='2026'></div>
+                        <div><label>Mês</label><input name='month' type='number' value='1'></div>
+                        <div><label>Dia</label><input name='day' type='number' value='1'></div>
+                        <div><label>Hora</label><input name='hour' type='number' value='12'></div>
+                        <div><label>Minuto</label><input name='minute' type='number' value='0'></div>
+                        <div><label>Segundo</label><input name='second' type='number' value='0'></div>
+                    </div><button type='submit'>setDatetime</button>
+                </form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setYear'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='2026'><button type='submit'>setYear</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setMonth'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='1'><button type='submit'>setMonth</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setDay'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='1'><button type='submit'>setDay</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setHour'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='12'><button type='submit'>setHour</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setMinute'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='0'><button type='submit'>setMinute</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setSecond'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='0'><button type='submit'>setSecond</button></form>
+                <form action='/set' method='GET'><input type='hidden' name='fn'
+                        value='setEpochTime'><label>Valor</label><input type='number' step='1' name='value'
+                        placeholder='1767225600'><button type='submit'>setEpochTime</button></form>
+                <div class='display small'>Aguardando leitura/comando.</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
