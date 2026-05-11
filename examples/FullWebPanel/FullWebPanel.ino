@@ -25,6 +25,7 @@
 #include <ESP8266WebServer.h>
 #include <ModbusRTU.h>
 #include <InverterModbusLib.h>
+#include "WebPage.h"
 
 // ====================================================== 
 // WiFi AP
@@ -44,6 +45,7 @@ ModbusRTU mb;
 
 // Active inverter selected in the /config page.
 Inverter* inverter = nullptr;
+
 
 struct ModelOption {
   const char* label;
@@ -230,10 +232,6 @@ String boolText(bool v) {
   return v ? "true" : "false";
 }
 
-String okFail(bool ok) {
-  return ok ? "OK" : "FALHA";
-}
-
 String phaseText(const PhaseData& p, const char* unit) {
   String s;
   s += "R: " + String(p.r, 3) + " " + unit + "<br>";
@@ -294,105 +292,6 @@ uint32_t makeSerialConfig(char parity, uint8_t stopBits) {
   return SERIAL_8N1;
 }
 
-String pageHeader(const String& title) {
-  String html;
-  html += "<!DOCTYPE html><html><head><meta charset='UTF-8'>";
-  html += "<meta name='viewport' content='width=device-width, initial-scale=1'>";
-  html += "<title>" + title + "</title>";
-  html += "<style>";
-  html += "body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0;color:#222;}";
-  html += "header{background:#0b3d5c;color:white;padding:16px 20px;}";
-  html += "header h1{font-size:22px;margin:0 0 10px 0;}";
-  html += "nav a{display:inline-block;color:white;text-decoration:none;background:#1565c0;padding:8px 12px;border-radius:8px;margin-right:8px;}";
-  html += ".wrap{max-width:1180px;margin:0 auto;padding:18px;}";
-  html += ".status{background:#fff;border-left:5px solid #1565c0;padding:12px;border-radius:10px;margin-bottom:16px;box-shadow:0 1px 5px rgba(0,0,0,.08);}";
-  html += ".grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}";
-  html += ".card{background:white;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.12);}";
-  html += ".card h2{font-size:17px;margin:0 0 10px 0;color:#0b3d5c;}";
-  html += "form{margin:0 0 10px 0;}";
-  html += "label{display:block;font-size:13px;font-weight:bold;margin-top:8px;margin-bottom:4px;}";
-  html += "input,select{width:100%;box-sizing:border-box;padding:9px;border:1px solid #bbb;border-radius:8px;font-size:15px;background:white;}";
-  html += "button,.btn{display:inline-block;width:100%;box-sizing:border-box;border:0;border-radius:8px;background:#1565c0;color:white;padding:10px 12px;font-size:15px;font-weight:bold;text-align:center;text-decoration:none;cursor:pointer;}";
-  html += ".danger button{background:#b3261e;}";
-  html += ".toggle button{background:#5b2da0;}";
-  html += ".display{background:#eef3f7;border-radius:8px;padding:10px;min-height:42px;line-height:1.45;margin-top:10px;font-size:14px;overflow-wrap:anywhere;}";
-  html += ".ok{border-left:5px solid #16833a;}.fail{border-left:5px solid #b3261e;}";
-  html += ".small{font-size:12px;color:#666;line-height:1.4;}";
-  html += ".row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}";
-  html += "@media(max-width:700px){.row{grid-template-columns:1fr;}}";
-  html += "</style></head><body>";
-  html += "<header><h1>" + title + "</h1><nav><a href='/'>Painel</a><a href='/config'>Configuração</a></nav></header>";
-  html += "<div class='wrap'>";
-  return html;
-}
-
-
-String pageFooter() {
-  return "</div></body></html>";
-}
-
-String resultDisplay(const String& fn, const String& currentFn, const String& result) {
-  if (fn == currentFn) return "<div class='display'>" + result + "</div>";
-  return "<div class='display small'>Aguardando leitura/comando.</div>";
-}
-
-void addCard(String& html, const String& title, const String& body) {
-  html += "<div class='card'><h2>" + title + "</h2>" + body + "</div>";
-}
-
-String getForm(const char* label, const char* fn) {
-  String html;
-  html += "<form action='/get' method='GET'>";
-  html += "<input type='hidden' name='fn' value='" + String(fn) + "'>";
-  html += "<button type='submit'>" + String(label) + "</button>";
-  html += "</form>";
-  return html;
-}
-
-String setFloatForm(const char* label, const char* fn, const char* unit, const char* placeholder) {
-  String html;
-  html += "<form action='/set' method='GET'>";
-  html += "<input type='hidden' name='fn' value='" + String(fn) + "'>";
-  html += "<label>Valor (" + String(unit) + ")</label>";
-  html += "<input type='number' step='0.001' name='value' placeholder='" + String(placeholder) + "'>";
-  html += "<button type='submit'>" + String(label) + "</button>";
-  html += "</form>";
-  return html;
-}
-
-String setUIntForm(const char* label, const char* fn, const char* placeholder) {
-  String html;
-  html += "<form action='/set' method='GET'>";
-  html += "<input type='hidden' name='fn' value='" + String(fn) + "'>";
-  html += "<label>Valor</label>";
-  html += "<input type='number' step='1' name='value' placeholder='" + String(placeholder) + "'>";
-  html += "<button type='submit'>" + String(label) + "</button>";
-  html += "</form>";
-  return html;
-}
-
-String setBoolForm(const char* label, const char* fn) {
-  String html;
-  html += "<form action='/set' method='GET'>";
-  html += "<input type='hidden' name='fn' value='" + String(fn) + "'>";
-  html += "<label>Estado</label>";
-  html += "<select name='value'><option value='1'>true / habilitar</option><option value='0'>false / desabilitar</option></select>";
-  html += "<button type='submit'>" + String(label) + "</button>";
-  html += "</form>";
-  return html;
-}
-
-String actionButton(const char* label, const char* fn, bool danger = false) {
-  String html;
-  html += danger ? "<div class='danger'>" : "";
-  html += "<form action='/set' method='GET'>";
-  html += "<input type='hidden' name='fn' value='" + String(fn) + "'>";
-  html += "<button type='submit'>" + String(label) + "</button>";
-  html += "</form>";
-  html += danger ? "</div>" : "";
-  return html;
-}
-
 // ====================================================== 
 // Inverter configuration
 // ====================================================== 
@@ -424,188 +323,16 @@ bool ensureInverterConfigured() {
 }
 
 // ====================================================== 
-// Pages
-// ====================================================== 
-
-String buildMainPage(const String& activeFn = "", const String& result = "") {
-  ensureInverterConfigured();
-
-  String html = pageHeader("InverterModbusLib - Web Panel");
-
-  html += "<div class='status'>";
-  html += "<b>Modelo ativo:</b> " + String(modelOptions[activeModelIndex].label) + "<br>";
-  html += "<b>Slave ID:</b> " + String(activeCfg.id) + " | <b>Baud:</b> " + String(activeCfg.baud);
-  html += " | <b>Serial:</b> " + serialConfigToText(activeCfg.serialConfig);
-  html += " | <b>DE/RE:</b> GPIO " + String(activeCfg.deRePin);
-  html += "<div class='small'>Use a página de configuração para alterar modelo, ID e parâmetros Modbus/UART.</div>";
-  html += "</div>";
-
-  html += "<div class='grid'>";
-
-  addCard(html, "Identificação", getForm("Ler número serial", "getSerialNumber") + resultDisplay("getSerialNumber", activeFn, result));
-
-  String control;
-  control += getForm("isBooted", "isBooted") + resultDisplay("isBooted", activeFn, result);
-  control += getForm("isPowerLimitEnabled", "isPowerLimitEnabled") + resultDisplay("isPowerLimitEnabled", activeFn, result);
-  control += getForm("getPowerLimit", "getPowerLimit") + resultDisplay("getPowerLimit", activeFn, result);
-  control += getForm("getPowerLimitPercent", "getPowerLimitPercent") + resultDisplay("getPowerLimitPercent", activeFn, result);
-  control += getForm("isExportLimitEnabled", "isExportLimitEnabled") + resultDisplay("isExportLimitEnabled", activeFn, result);
-  control += getForm("getExportLimit", "getExportLimit") + resultDisplay("getExportLimit", activeFn, result);
-  control += getForm("getExportLimitPercent", "getExportLimitPercent") + resultDisplay("getExportLimitPercent", activeFn, result);
-  control += getForm("isPowerFactorEnabled", "isPowerFactorEnabled") + resultDisplay("isPowerFactorEnabled", activeFn, result);
-  control += getForm("getPowerFactorSetpoint", "getPowerFactorSetpoint") + resultDisplay("getPowerFactorSetpoint", activeFn, result);
-  addCard(html, "Leituras - Controle e Limites", control);
-
-  String controlSet;
-  controlSet += actionButton("boot()", "boot");
-  controlSet += actionButton("shutdown()", "shutdown", true);
-  controlSet += setBoolForm("setBoot", "setBoot");
-  controlSet += setBoolForm("setPowerLimitEnabled", "setPowerLimitEnabled");
-  controlSet += setFloatForm("setPowerLimit", "setPowerLimit", "W", "3000");
-  controlSet += setFloatForm("setPowerLimitPercent", "setPowerLimitPercent", "%", "80");
-  controlSet += setBoolForm("setExportLimitEnabled", "setExportLimitEnabled");
-  controlSet += setFloatForm("setExportLimit", "setExportLimit", "W", "1000");
-  controlSet += setFloatForm("setExportLimitPercent", "setExportLimitPercent", "%", "10");
-  controlSet += setBoolForm("setPowerFactorEnabled", "setPowerFactorEnabled");
-  controlSet += setFloatForm("setPowerFactor", "setPowerFactor", "PF", "0.98");
-  controlSet += "<form action='/set' method='GET'><input type='hidden' name='fn' value='setPowerFactorExcitationMode'><label>Modo de excitação</label><select name='value'><option value='0'>LAGGING</option><option value='1'>LEADING</option><option value='2'>INDUCTIVE</option><option value='3'>CAPACITIVE</option><option value='4'>OVER_EXCITED</option><option value='5'>UNDER_EXCITED</option></select><button type='submit'>setPowerFactorExcitationMode</button></form>";
-  controlSet += resultDisplay("set", activeFn, result);
-  addCard(html, "Escritas - Controle e Limites", controlSet);
-
-  String timeGet;
-  timeGet += getForm("getDatetime", "getDatetime") + resultDisplay("getDatetime", activeFn, result);
-  timeGet += getForm("getYear", "getYear") + resultDisplay("getYear", activeFn, result);
-  timeGet += getForm("getMonth", "getMonth") + resultDisplay("getMonth", activeFn, result);
-  timeGet += getForm("getDay", "getDay") + resultDisplay("getDay", activeFn, result);
-  timeGet += getForm("getHour", "getHour") + resultDisplay("getHour", activeFn, result);
-  timeGet += getForm("getMinute", "getMinute") + resultDisplay("getMinute", activeFn, result);
-  timeGet += getForm("getSecond", "getSecond") + resultDisplay("getSecond", activeFn, result);
-  timeGet += getForm("getEpochTime", "getEpochTime") + resultDisplay("getEpochTime", activeFn, result);
-  addCard(html, "Leituras - Data/Hora", timeGet);
-
-  String timeSet;
-  timeSet += "<form action='/set' method='GET'><input type='hidden' name='fn' value='setDatetime'><div class='row'><div><label>Ano</label><input name='year' type='number' value='2026'></div><div><label>Mês</label><input name='month' type='number' value='1'></div><div><label>Dia</label><input name='day' type='number' value='1'></div><div><label>Hora</label><input name='hour' type='number' value='12'></div><div><label>Minuto</label><input name='minute' type='number' value='0'></div><div><label>Segundo</label><input name='second' type='number' value='0'></div></div><button type='submit'>setDatetime</button></form>";
-  timeSet += setUIntForm("setYear", "setYear", "2026");
-  timeSet += setUIntForm("setMonth", "setMonth", "1");
-  timeSet += setUIntForm("setDay", "setDay", "1");
-  timeSet += setUIntForm("setHour", "setHour", "12");
-  timeSet += setUIntForm("setMinute", "setMinute", "0");
-  timeSet += setUIntForm("setSecond", "setSecond", "0");
-  timeSet += setUIntForm("setEpochTime", "setEpochTime", "1767225600");
-  timeSet += resultDisplay("setTime", activeFn, result);
-  addCard(html, "Escritas - Data/Hora", timeSet);
-
-  String ac;
-  ac += getForm("getActivePower", "getActivePower") + resultDisplay("getActivePower", activeFn, result);
-  ac += getForm("getReactivePower", "getReactivePower") + resultDisplay("getReactivePower", activeFn, result);
-  ac += getForm("getApparentPower", "getApparentPower") + resultDisplay("getApparentPower", activeFn, result);
-  ac += getForm("getPowerFactor", "getPowerFactor") + resultDisplay("getPowerFactor", activeFn, result);
-  ac += getForm("getGridVoltage", "getGridVoltage") + resultDisplay("getGridVoltage", activeFn, result);
-  ac += getForm("getGridCurrent", "getGridCurrent") + resultDisplay("getGridCurrent", activeFn, result);
-  ac += getForm("getGridFrequency", "getGridFrequency") + resultDisplay("getGridFrequency", activeFn, result);
-  addCard(html, "Medições AC", ac);
-
-  String energy;
-  energy += getForm("getTotalEnergy", "getTotalEnergy") + resultDisplay("getTotalEnergy", activeFn, result);
-  energy += getForm("getDailyEnergy", "getDailyEnergy") + resultDisplay("getDailyEnergy", activeFn, result);
-  addCard(html, "Energia", energy);
-
-  String strings;
-  strings += getForm("getStringVoltage", "getStringVoltage") + resultDisplay("getStringVoltage", activeFn, result);
-  strings += getForm("getStringCurrent", "getStringCurrent") + resultDisplay("getStringCurrent", activeFn, result);
-  strings += getForm("getStringPower", "getStringPower") + resultDisplay("getStringPower", activeFn, result);
-  addCard(html, "Strings FV", strings);
-
-  String battery;
-  battery += getForm("getBatteryVoltage", "getBatteryVoltage") + resultDisplay("getBatteryVoltage", activeFn, result);
-  battery += getForm("getBatteryCurrent", "getBatteryCurrent") + resultDisplay("getBatteryCurrent", activeFn, result);
-  battery += getForm("getBatteryPower", "getBatteryPower") + resultDisplay("getBatteryPower", activeFn, result);
-  battery += getForm("getBatterySoC", "getBatterySoC") + resultDisplay("getBatterySoC", activeFn, result);
-  battery += getForm("getBatterySoH", "getBatterySoH") + resultDisplay("getBatterySoH", activeFn, result);
-  addCard(html, "Bateria", battery);
-
-  String eps;
-  eps += getForm("getEPSVoltage", "getEPSVoltage") + resultDisplay("getEPSVoltage", activeFn, result);
-  eps += getForm("getEPSCurrent", "getEPSCurrent") + resultDisplay("getEPSCurrent", activeFn, result);
-  eps += getForm("getEPSActivePower", "getEPSActivePower") + resultDisplay("getEPSActivePower", activeFn, result);
-  addCard(html, "EPS", eps);
-
-  String health;
-  health += getForm("getTemperature", "getTemperature") + resultDisplay("getTemperature", activeFn, result);
-  health += getForm("getInsulationResistance", "getInsulationResistance") + resultDisplay("getInsulationResistance", activeFn, result);
-  addCard(html, "Diagnóstico e Saúde", health);
-
-  String status;
-  status += getForm("getInverterStatus", "getInverterStatus") + resultDisplay("getInverterStatus", activeFn, result);
-  status += getForm("getAlarm", "getAlarm") + resultDisplay("getAlarm", activeFn, result);
-  addCard(html, "Status e Alarmes", status);
-
-  html += "</div>";
-  html += pageFooter();
-  return html;
-}
-
-String buildConfigPage(const String& message = "") {
-  String html = pageHeader("Configuração Modbus");
-
-  if (message.length() > 0) {
-    html += "<div class='status'>" + message + "</div>";
-  }
-
-  html += "<div class='card'>";
-  html += "<form action='/config/apply' method='GET'>";
-
-  html += "<label>Modelo do inversor</label>";
-  html += "<select name='model'>";
-  for (uint16_t i = 0; i < MODEL_COUNT; i++) {
-    html += "<option value='" + String(i) + "'";
-    if (i == activeModelIndex) html += " selected";
-    html += ">" + String(i) + " - " + String(modelOptions[i].label) + "</option>";
-  }
-  html += "</select>";
-
-  html += "<div class='row'>";
-  html += "<div><label>Slave ID</label><input type='number' name='id' min='1' max='247' value='" + String(activeCfg.id) + "'></div>";
-  html += "<div><label>Baud rate</label><select name='baud'>";
-  uint32_t bauds[] = {1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200};
-  for (uint8_t i = 0; i < sizeof(bauds) / sizeof(bauds[0]); i++) {
-    html += "<option value='" + String(bauds[i]) + "'";
-    if (bauds[i] == activeCfg.baud) html += " selected";
-    html += ">" + String(bauds[i]) + "</option>";
-  }
-  html += "</select></div>";
-
-  html += "<div><label>Paridade</label><select name='parity'>";
-  html += "<option value='N'>None</option><option value='E'>Even</option><option value='O'>Odd</option>";
-  html += "</select></div>";
-
-  html += "<div><label>Stop bits</label><select name='stopBits'>";
-  html += "<option value='1'>1</option><option value='2'>2</option>";
-  html += "</select></div>";
-
-  html += "<div><label>Pino DE/RE</label><input type='number' name='dere' min='-1' max='16' value='" + String(activeCfg.deRePin) + "'></div>";
-  html += "</div>";
-
-  html += "<p class='small'>Data bits fixo em 8. Use DE/RE = -1 apenas se não houver controle RS485 por pino.</p>";
-  html += "<button type='submit'>Atualizar Serial/Modbus</button>";
-  html += "</form>";
-  html += "</div>";
-  html += pageFooter();
-  return html;
-}
-
-// ====================================================== 
 // HTTP handlers
 // ====================================================== 
 
 void handleRoot() {
-  server.send(200, "text/html", buildMainPage());
+  server.send_P(200, "text/html", rootPage);
 }
 
 void handleConfig() {
-  server.send(200, "text/html", buildConfigPage());
+  server.send_P(200, "text/html", configPage);
 }
-
 
 void handleConfigApply() {
   uint16_t modelIndex = server.hasArg("model") ? server.arg("model").toInt() : activeModelIndex;
@@ -631,7 +358,7 @@ void handleConfigApply() {
   bool ok = configureActiveInverter(modelIndex, cfg);
 
   if (!ok) {
-    server.send(200, "text/html", buildConfigPage("Falha ao aplicar configuração. Verifique o modelo e os parâmetros Modbus."));
+    server.send(200, "text/html", "Failed"); //Aplicar configuração de mensagem pelo JS
     return;
   }
 
@@ -640,14 +367,16 @@ void handleConfigApply() {
   server.send(303);
 }
 
-void handleGet() {
-  if (!ensureInverterConfigured()) {
-    server.send(200, "text/html", buildMainPage("config", "Falha ao configurar inversor."));
+void handleApiGet() {
+
+  if (!server.hasArg("fn")){
+    server.send(400, "text/plain", "Missing fn");
     return;
   }
 
   String fn = server.arg("fn");
-  String result;
+  String result = "Unknown function";
+
   bool ok = false;
 
   if (fn == "getSerialNumber") { String v; ok = inverter->getSerialNumber(v); result = ok ? escapeHtml(v) : "Falha"; }
@@ -694,17 +423,17 @@ void handleGet() {
   else if (fn == "getAlarm") { Alarm v; ok = inverter->getAlarm(v); result = ok ? String((int)v) : "Falha"; }
   else { result = "Função desconhecida."; }
 
-  result = "<b>" + okFail(ok) + "</b><br>" + result;
-  server.send(200, "text/html", buildMainPage(fn, result));
+  server.send(200, "text/html", result);
 }
 
-void handleSet() {
-  if (!ensureInverterConfigured()) {
-    server.send(200, "text/html", buildMainPage("set", "Falha ao configurar inversor."));
+void handleApiSet() {
+  if (!server.hasArg("fn")) {
+    server.send(400, "text/plain", "Missing fn");
     return;
   }
 
   String fn = server.arg("fn");
+
   float f = server.hasArg("value") ? server.arg("value").toFloat() : 0.0f;
   uint32_t u = server.hasArg("value") ? (uint32_t)server.arg("value").toInt() : 0;
   bool b = server.hasArg("value") ? (server.arg("value").toInt() != 0) : false;
@@ -741,11 +470,11 @@ void handleSet() {
   else if (fn == "setMinute") { group = "setTime"; ok = inverter->setMinute((uint16_t)u); }
   else if (fn == "setSecond") { group = "setTime"; ok = inverter->setSecond((uint16_t)u); }
   else if (fn == "setEpochTime") { group = "setTime"; ok = inverter->setEpochTime(u); }
+  else { server.send(400, "text/plain", "Unknown function"); return;}
 
-  String result = "<b>" + okFail(ok) + "</b><br>" + escapeHtml(fn);
-  server.send(200, "text/html", buildMainPage(group, result));
+  server.send(200, "text/html", ok ? "OK" : "Failed");
+  return;
 }
-
 
 // ====================================================== 
 
@@ -761,8 +490,8 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/config", handleConfig);
   server.on("/config/apply", handleConfigApply);
-  server.on("/get", handleGet);
-  server.on("/set", handleSet);
+  server.on("api/get", handleApiGet);
+  server.on("api/set", handleApiSet);
   server.begin();
 }
 
