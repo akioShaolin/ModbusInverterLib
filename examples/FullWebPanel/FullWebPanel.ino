@@ -336,17 +336,21 @@ void handleConfig() {
 
 void handleConfigApply() {
   uint16_t modelIndex = server.hasArg("model") ? server.arg("model").toInt() : activeModelIndex;
-  int idRaw = server.hasArg("id") ? server.arg("id").toInt() : activeCfg.id;
-  uint8_t id = 1;
 
-  if (idRaw < 1) id = 1;
-  else if (idRaw > 247) id = 247;
-  else id = (uint8_t)idRaw;
+  if (modelIndex >= MODEL_COUNT) {
+    server.send(400, "text/plain", "Modelo invalido.");
+    return;
+  }
+
+  int idRaw = server.hasArg("id") ? server.arg("id").toInt() : activeCfg.id;
+  uint8_t id = constrain(idRaw, 1, 247);
 
   uint32_t baud = server.hasArg("baud") ? server.arg("baud").toInt() : activeCfg.baud;
+
   char parity = server.hasArg("parity") ? server.arg("parity")[0] : 'N';
   uint8_t stopBits = server.hasArg("stopBits") ? server.arg("stopBits").toInt() : 1;
-  int8_t deRePin = server.hasArg("dere") ? server.arg("dere").toInt() : DEFAULT_DE_RE_PIN;
+
+  int8_t deRePin = server.hasArg("dere") ? server.arg("dere").toInt() : activeCfg.deRePin;
 
   ModbusConfigData cfg = {
     id,
@@ -358,11 +362,10 @@ void handleConfigApply() {
   bool ok = configureActiveInverter(modelIndex, cfg);
 
   if (!ok) {
-    server.send(200, "text/html", "Failed"); //Aplicar configuração de mensagem pelo JS
+    server.send(500, "text/plain", "Falha ao aplicar configuracao.");
     return;
   }
 
-  // Depois de atualizar modelo/UART/Modbus, volta para a tela principal.
   server.sendHeader("Location", "/");
   server.send(303);
 }
@@ -476,6 +479,30 @@ void handleApiSet() {
   return;
 }
 
+void handleApiConfig() {
+  String html;
+  html.reserve(256);
+
+  html += "<b>Modelo ativo:</b> ";
+  html += modelOptions[activeModelIndex].label;
+  html += "<br>";
+
+  html += "<b>Slave ID:</b> ";
+  html += String(activeCfg.id);
+  html += " | <b>Baud:</b> ";
+  html += String(activeCfg.baud);
+  html += " | <b>Serial:</b> ";
+  html += serialConfigToText(activeCfg.serialConfig);
+  html += " | <b>DE/RE:</b> GPIO ";
+  html += String(activeCfg.deRePin);
+
+  html += "<div class='small'>";
+  html += "Use a página de configuração para alterar modelo, ID e parâmetros Modbus/UART.";
+  html += "</div>";
+
+  server.send(200, "text/html", html);
+}
+
 // ====================================================== 
 
 void setup() {
@@ -490,6 +517,7 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/config", handleConfig);
   server.on("/config/apply", handleConfigApply);
+  server.on("/api/config", handleApiConfig);
   server.on("api/get", handleApiGet);
   server.on("api/set", handleApiSet);
   server.begin();
