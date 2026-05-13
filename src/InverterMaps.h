@@ -81,7 +81,7 @@ struct ModbusField {
     HandlerId handlerId = DEFAULT_HANDLER;
 };
 
-constexpr ModbusField INVALID_FIELD = { 0xFFFF, NONE, 0, 0, 1.0f, false, false, FIELD_SIMPLE, DEFAULT_HANDLER };
+constexpr ModbusField INVALID_FIELD = { 0xFFFF, NONE, 0, 0, 0.0f, false, false, FIELD_SIMPLE, DEFAULT_HANDLER };
 
 struct ModbusInverterMap {
     // Identificação
@@ -141,6 +141,14 @@ struct ModbusInverterMap {
     ModbusField epsCurrent;
     ModbusField epsActivePower;
     
+// ActivePowerFeature
+// ReactivePowerFeature
+// EpsFeature
+// BatteryFeature
+// PvStringFeature
+// GridFeature
+// EnergyFeature
+// DeviceStatusFeature
 };
 
 ModbusInverterMap getInverterMap(InverterModel model);

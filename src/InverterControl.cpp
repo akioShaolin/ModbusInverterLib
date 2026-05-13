@@ -146,9 +146,15 @@ bool Inverter::setPowerLimitEnabled(bool enabled) {
     
     switch (_map.enablePowerLimit.mode) {
 
-        case FIELD_SIMPLE:
+        case FIELD_SIMPLE: {
             if (!_map.enablePowerLimit.writable) return false;
-            return writeField(_map.enablePowerLimit, (uint16_t)enabled);
+            if (_descriptor.powerLimitMode == nullptr) return false;
+            uint16_t v = enabled
+                ? pgm_read_word(&_descriptor.powerLimitMode->powerLimitEnable)
+                : pgm_read_word(&_descriptor.powerLimitMode->powerLimitDisable);
+
+            return writeField(_map.enablePowerLimit, v);
+        }
 
         default:
             return false;
@@ -166,7 +172,7 @@ bool Inverter::setPowerLimit(float watts) {
                 return writeField(_map.PowerLimit, watts / _map.PowerLimit.scale);
             }
 
-            if(_map.PowerLimitPercent.writable && _map.PowerLimitPercent.scale == 0.0f) {
+            if(_map.PowerLimitPercent.writable && _map.PowerLimitPercent.scale != 0.0f) {
                 float percent = (watts / (float)_descriptor.nominalPowerW) * 100.0f;
                 return writeField(_map.PowerLimitPercent, percent / _map.PowerLimitPercent.scale);
             }
@@ -184,11 +190,11 @@ bool Inverter::setPowerLimitPercent(float percent) {
     switch (_map.PowerLimitPercent.mode) {
         
         case FIELD_SIMPLE:
-            if (_map.PowerLimitPercent.writable && _map.PowerLimitPercent.scale == 0.0f) {
+            if (_map.PowerLimitPercent.writable && _map.PowerLimitPercent.scale != 0.0f) {
                 return writeField(_map.PowerLimitPercent, percent / _map.PowerLimitPercent.scale);
             }
 
-            if (_map.PowerLimit.writable && _map.PowerLimit.scale == 0.0f) {
+            if (_map.PowerLimit.writable && _map.PowerLimit.scale != 0.0f) {
                 float watts = ((float)_descriptor.nominalPowerW * percent) / 100.0f;
                 return writeField(_map.PowerLimit, watts / _map.PowerLimit.scale);
             }
@@ -201,12 +207,12 @@ bool Inverter::setPowerLimitPercent(float percent) {
 
 bool Inverter::setExportLimitEnabled(bool enabled) {
     if (_map.serialNumber.address == 0xFFFF) return false;
-    if (!_map.enableExportLimit.writable) return false;
-    if (_descriptor.exportLimitMode == nullptr) return false;
     
     switch (_map.enableExportLimit.mode) {
 
         case FIELD_SIMPLE: {
+            if (!_map.enableExportLimit.writable) return false;
+            if (_descriptor.exportLimitMode == nullptr) return false;
             uint16_t v = enabled
                 ? pgm_read_word(&_descriptor.exportLimitMode->exportLimitEnable)
                 : pgm_read_word(&_descriptor.exportLimitMode->exportLimitDisable);

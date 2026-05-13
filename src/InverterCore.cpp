@@ -80,14 +80,13 @@ bool Inverter::readScaledFloat(const ModbusField& field, float* value, uint8_t c
 
     switch(field.type) {
         case U16: {
-            if (field.length > count) return false;
             if (field.length > INV_MAX_U16_VALUES) return false;
 
             uint16_t raw[INV_MAX_U16_VALUES];
 
             if (!readField(field, raw)) return false;
 
-            for(uint8_t i = 0; i < field.length; i++) {
+            for(uint8_t i = 0; i < count; i++) {
                 value[i] = (float)raw[i] * field.scale;
             }
 
@@ -95,14 +94,13 @@ bool Inverter::readScaledFloat(const ModbusField& field, float* value, uint8_t c
         }
 
         case U32: {
-            if (field.length > count) return false;
             if (field.length > INV_MAX_U32_VALUES) return false;
 
             uint32_t raw[INV_MAX_U32_VALUES];
 
             if (!readField(field, raw)) return false;
 
-            for (uint8_t i = 0; i < field.length; i++) {
+            for (uint8_t i = 0; i < count; i++) {
                 value[i] = (float)raw[i] * field.scale;
             }
             
@@ -110,14 +108,13 @@ bool Inverter::readScaledFloat(const ModbusField& field, float* value, uint8_t c
         }
         
         case FLOAT32: {
-            if (field.length > count) return false;
             if (field.length > INV_MAX_FLOAT_VALUES) return false;
 
             float raw[INV_MAX_FLOAT_VALUES];
 
             if (!readField(field, raw)) return false;
 
-            for (uint8_t i = 0; i < field.length; i++) {
+            for (uint8_t i = 0; i < count; i++) {
                 value[i] = raw[i] * field.scale;
             }
             
@@ -125,14 +122,13 @@ bool Inverter::readScaledFloat(const ModbusField& field, float* value, uint8_t c
         }
 
         case I16: {
-            if (field.length > count) return false;
             if (field.length > INV_MAX_U16_VALUES) return false;
 
             int16_t raw[INV_MAX_U16_VALUES];
 
             if (!readField(field, raw)) return false;
             
-            for(uint8_t i = 0; i < field.length; i++) {
+            for(uint8_t i = 0; i < count; i++) {
                 value[i] = (float)raw[i] * field.scale;
             }
 
@@ -140,14 +136,13 @@ bool Inverter::readScaledFloat(const ModbusField& field, float* value, uint8_t c
         }
 
         case I32: {
-            if (field.length > count) return false;
             if (field.length > INV_MAX_U32_VALUES) return false;
 
             int32_t raw[INV_MAX_U32_VALUES];
 
             if (!readField(field, raw)) return false;
             
-            for (uint8_t i = 0; i < field.length; i++) {
+            for (uint8_t i = 0; i < count; i++) {
                 value[i] = (float)raw[i] * field.scale;
             }
             

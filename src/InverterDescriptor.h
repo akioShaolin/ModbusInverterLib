@@ -65,6 +65,11 @@ struct BootMode {
     uint16_t shutdownValue;
 };
 
+struct PowerLimitMode {
+    uint16_t powerLimitEnable;
+    uint16_t powerLimitDisable;
+};
+
 struct ExportLimitMode {
     uint16_t exportLimitEnable;
     uint16_t exportLimitDisable;
@@ -99,6 +104,7 @@ struct InverterDescriptor {
     PVInfo pvInfo;
     BatteryInfo batteryInfo;
     const BootMode* bootMode;    
+    const PowerLimitMode* powerLimitMode;
     const ExportLimitMode* exportLimitMode;
     
     // Formatos de interpretação de alarmes e status

@@ -201,8 +201,8 @@ public:
     bool getTemperature(float& temperature);         //
     bool getInsulationResistance(float& kiloOhms);   //
     // Status/Alarmes
-    bool getInverterStatus(uint16_t status);//InverterStatus& status);  //
-    bool getAlarm(uint16_t alarm);//Alarm& alarm);                     //
+    bool getInverterStatus(uint32_t status);//InverterStatus& status);  //
+    bool getAlarm(uint32_t alarm);//Alarm& alarm);                     //
     // ------------------------------------------------------
 
 private:

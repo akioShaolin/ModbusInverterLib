@@ -540,6 +540,7 @@ bool Inverter::getStringVoltage(StringValues& voltage) {
         case FIELD_SIMPLE: {
             if (!_map.stringVoltage.readable) return false;
             if (_map.stringVoltage.length == 0 || _map.stringVoltage.length > MAX_STRINGS) return false;
+            if (_descriptor.pvInfo.stringCount == 0 || _descriptor.pvInfo.stringCount > MAX_STRINGS) return false;
 
             float v[MAX_STRINGS];
 
@@ -547,8 +548,8 @@ bool Inverter::getStringVoltage(StringValues& voltage) {
 
             voltage.count = _descriptor.pvInfo.stringCount;
 
-            for(uint8_t i = 0; i < MAX_STRINGS; i++) {
-                voltage.values[i] = (i < voltage.count) ? v[i] : 0.0f;
+            for(uint8_t i = 0; i < voltage.count; i++) {
+                voltage.values[i] = v[i];
             }
 
             return true;
@@ -567,6 +568,7 @@ bool Inverter::getStringCurrent(StringValues& current) {
         case FIELD_SIMPLE: {
             if (!_map.stringCurrent.readable) return false;
             if (_map.stringCurrent.length == 0 || _map.stringCurrent.length > MAX_STRINGS) return false;
+            if (_descriptor.pvInfo.stringCount == 0 || _descriptor.pvInfo.stringCount > MAX_STRINGS) return false;
 
             float v[MAX_STRINGS];
 
@@ -574,8 +576,8 @@ bool Inverter::getStringCurrent(StringValues& current) {
 
             current.count = _descriptor.pvInfo.stringCount;
 
-            for(uint8_t i = 0; i < MAX_STRINGS; i++) {
-                current.values[i] = (i < current.count) ? v[i] : 0.0f;
+            for(uint8_t i = 0; i < current.count; i++) {
+                current.values[i] = v[i];
             }
 
             return true;
@@ -594,6 +596,7 @@ bool Inverter::getStringPower(StringValues& power) {
         case FIELD_SIMPLE: {
             if (!_map.stringPower.readable) return false;
             if (_map.stringPower.length == 0 || _map.stringPower.length > MAX_STRINGS) return false;
+            if (_descriptor.pvInfo.stringCount == 0 || _descriptor.pvInfo.stringCount > MAX_STRINGS) return false;
 
             float v[MAX_STRINGS];
 
@@ -601,8 +604,8 @@ bool Inverter::getStringPower(StringValues& power) {
 
             power.count = _descriptor.pvInfo.stringCount;
 
-            for(uint8_t i = 0; i < MAX_STRINGS; i++) {
-                power.values[i] = (i < power.count) ? v[i] : 0.0f;
+            for(uint8_t i = 0; i < power.count; i++) {
+                power.values[i] = v[i];
             }
 
             return true;
@@ -895,7 +898,7 @@ bool Inverter::getInsulationResistance(float& kiloOhms) {
 // ou códigos proprietários distintos.
 
 // #############################################################################################################
-bool Inverter::getInverterStatus(uint16_t status) {//InverterStatus& status) {
+bool Inverter::getInverterStatus(uint32_t status) {//InverterStatus& status) {
     if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.inverterStatus.mode) {
@@ -916,7 +919,7 @@ bool Inverter::getInverterStatus(uint16_t status) {//InverterStatus& status) {
     }
 }
 
-bool Inverter::getAlarm(uint16_t alarm) {//Alarm& alarm) {
+bool Inverter::getAlarm(uint32_t alarm) {//Alarm& alarm) {
     if (_map.serialNumber.address == 0xFFFF) return false;
     
     switch (_map.alarm.mode) {
