@@ -102,6 +102,7 @@ A biblioteca trata automaticamente as operações de boot e shutdown utilizando 
 - O mapa Modbus ainda está em evolução e validação prática.
 - Algumas funções de escrita ainda estão em validação e podem variar bastante entre fabricantes. Em certos modelos, diferentes recursos podem compartilhar o mesmo registrador de controle com valores enumerados distintos. Essas funções podem existir internamente, mas ainda não fazem parte da API pública recomendada.
 - Alguns mapas ainda estão em validação prática. Certos fabricantes utilizam registradores diferentes para leitura e escrita, offsets 0-based/1-based, escalas diferentes ou campos parcialmente disponíveis.
+Current Modbus transaction layer is not thread-safe.
 
 ---
 

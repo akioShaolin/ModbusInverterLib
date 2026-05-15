@@ -38,7 +38,7 @@ const char* AP_PASS = "12345678";
 // Modbus / RS485 defaults
 // ====================================================== 
 
-#define DEFAULT_DE_RE_PIN 12
+int8_t deRePin = 12;
 
 ESP8266WebServer server(80);
 ModbusRTU mb;
@@ -209,7 +209,7 @@ ModelOption modelOptions[] = {
 const uint16_t MODEL_COUNT = sizeof(modelOptions) / sizeof(modelOptions[0]);
 
 uint16_t activeModelIndex = 0;
-ModbusConfigData activeCfg = {1, 9600, SERIAL_8N1, DEFAULT_DE_RE_PIN};
+ModbusConfigData activeCfg = {1, 9600, SERIAL_8N1, deRePin};
 
 // ====================================================== 
 // Formatting helpers
@@ -383,15 +383,6 @@ void handleApiGet() {
   bool ok = false;
 
   if (fn == "getSerialNumber") { String v; ok = inverter->getSerialNumber(v); result = ok ? escapeHtml(v) : "Falha"; }
-  else if (fn == "isBooted") { bool v; ok = inverter->isBooted(v); result = ok ? boolText(v) : "Falha"; }
-  else if (fn == "isPowerLimitEnabled") { bool v; ok = inverter->isPowerLimitEnabled(v); result = ok ? boolText(v) : "Falha"; }
-  else if (fn == "getPowerLimit") { float v; ok = inverter->getPowerLimit(v); result = ok ? String(v, 3) + " W" : "Falha"; }
-  else if (fn == "getPowerLimitPercent") { float v; ok = inverter->getPowerLimitPercent(v); result = ok ? String(v, 3) + " %" : "Falha"; }
-  else if (fn == "isExportLimitEnabled") { bool v; ok = inverter->isExportLimitEnabled(v); result = ok ? boolText(v) : "Falha"; }
-  else if (fn == "getExportLimit") { float v; ok = inverter->getExportLimit(v); result = ok ? String(v, 3) + " W" : "Falha"; }
-  else if (fn == "getExportLimitPercent") { float v; ok = inverter->getExportLimitPercent(v); result = ok ? String(v, 3) + " %" : "Falha"; }
-  else if (fn == "isPowerFactorEnabled") { bool v; ok = inverter->isPowerFactorEnabled(v); result = ok ? boolText(v) : "Falha"; }
-  else if (fn == "getPowerFactorSetpoint") { float v; ok = inverter->getPowerFactorSetpoint(v); result = ok ? String(v, 4) : "Falha"; }
   else if (fn == "getDatetime") { Datetime v; ok = inverter->getDatetime(v); result = ok ? datetimeText(v) : "Falha"; }
   else if (fn == "getYear") { uint16_t v; ok = inverter->getYear(v); result = ok ? String(v) : "Falha"; }
   else if (fn == "getMonth") { uint16_t v; ok = inverter->getMonth(v); result = ok ? String(v) : "Falha"; }
@@ -401,9 +392,6 @@ void handleApiGet() {
   else if (fn == "getSecond") { uint16_t v; ok = inverter->getSecond(v); result = ok ? String(v) : "Falha"; }
   else if (fn == "getEpochTime") { uint32_t v; ok = inverter->getEpochTime(v); result = ok ? String(v) : "Falha"; }
   else if (fn == "getActivePower") { float v; ok = inverter->getActivePower(v); result = ok ? String(v, 3) + " W" : "Falha"; }
-  else if (fn == "getReactivePower") { float v; ok = inverter->getReactivePower(v); result = ok ? String(v, 3) + " VAr" : "Falha"; }
-  else if (fn == "getApparentPower") { float v; ok = inverter->getApparentPower(v); result = ok ? String(v, 3) + " VA" : "Falha"; }
-  else if (fn == "getPowerFactor") { float v; ok = inverter->getPowerFactor(v); result = ok ? String(v, 4) : "Falha"; }
   else if (fn == "getGridVoltage") { PhaseData v; ok = inverter->getGridVoltage(v); result = ok ? phaseText(v, "V") : "Falha"; }
   else if (fn == "getGridCurrent") { PhaseData v; ok = inverter->getGridCurrent(v); result = ok ? phaseText(v, "A") : "Falha"; }
   else if (fn == "getGridFrequency") { PhaseData v; ok = inverter->getGridFrequency(v); result = ok ? phaseText(v, "Hz") : "Falha"; }
@@ -411,19 +399,8 @@ void handleApiGet() {
   else if (fn == "getDailyEnergy") { float v; ok = inverter->getDailyEnergy(v); result = ok ? String(v, 3) + " kWh" : "Falha"; }
   else if (fn == "getStringVoltage") { StringValues v; ok = inverter->getStringVoltage(v); result = ok ? stringValuesText(v, "V") : "Falha"; }
   else if (fn == "getStringCurrent") { StringValues v; ok = inverter->getStringCurrent(v); result = ok ? stringValuesText(v, "A") : "Falha"; }
-  else if (fn == "getStringPower") { StringValues v; ok = inverter->getStringPower(v); result = ok ? stringValuesText(v, "W") : "Falha"; }
-  else if (fn == "getBatteryVoltage") { BatteryValues v; ok = inverter->getBatteryVoltage(v); result = ok ? batteryValuesText(v, "V") : "Falha"; }
-  else if (fn == "getBatteryCurrent") { BatteryValues v; ok = inverter->getBatteryCurrent(v); result = ok ? batteryValuesText(v, "A") : "Falha"; }
-  else if (fn == "getBatteryPower") { BatteryValues v; ok = inverter->getBatteryPower(v); result = ok ? batteryValuesText(v, "W") : "Falha"; }
-  else if (fn == "getBatterySoC") { BatteryValues v; ok = inverter->getBatterySoC(v); result = ok ? batteryValuesText(v, "%") : "Falha"; }
-  else if (fn == "getBatterySoH") { BatteryValues v; ok = inverter->getBatterySoH(v); result = ok ? batteryValuesText(v, "%") : "Falha"; }
-  else if (fn == "getEPSVoltage") { PhaseData v; ok = inverter->getEPSVoltage(v); result = ok ? phaseText(v, "V") : "Falha"; }
-  else if (fn == "getEPSCurrent") { PhaseData v; ok = inverter->getEPSCurrent(v); result = ok ? phaseText(v, "A") : "Falha"; }
-  else if (fn == "getEPSActivePower") { PhaseData v; ok = inverter->getEPSActivePower(v); result = ok ? phaseText(v, "W") : "Falha"; }
   else if (fn == "getTemperature") { float v; ok = inverter->getTemperature(v); result = ok ? String(v, 3) + " °C" : "Falha"; }
   else if (fn == "getInsulationResistance") { float v; ok = inverter->getInsulationResistance(v); result = ok ? String(v, 3) + " kΩ" : "Falha"; }
-  else if (fn == "getInverterStatus") { uint16_t v; ok = inverter->getInverterStatus(v); result = ok ? String(v) : "Falha"; }
-  else if (fn == "getAlarm") { uint16_t v; ok = inverter->getAlarm(v); result = ok ? String(v) : "Falha"; }
   else { result = "Função desconhecida."; }
 
   server.send(200, "text/html", result);
@@ -446,15 +423,10 @@ void handleApiSet() {
   if (fn == "boot") ok = inverter->boot();
   else if (fn == "shutdown") ok = inverter->shutdown();
   else if (fn == "setBoot") ok = inverter->setBoot(b);
-  else if (fn == "setPowerLimitEnabled") ok = inverter->setPowerLimitEnabled(b);
   else if (fn == "setPowerLimit") ok = inverter->setPowerLimit(f);
   else if (fn == "setPowerLimitPercent") ok = inverter->setPowerLimitPercent(f);
-  else if (fn == "setExportLimitEnabled") ok = inverter->setExportLimitEnabled(b);
   else if (fn == "setExportLimit") ok = inverter->setExportLimit(f);
   else if (fn == "setExportLimitPercent") ok = inverter->setExportLimitPercent(f);
-  else if (fn == "setPowerFactorEnabled") ok = inverter->setPowerFactorEnabled(b);
-  else if (fn == "setPowerFactor") ok = inverter->setPowerFactor(f);
-  else if (fn == "setPowerFactorExcitationMode") ok = inverter->setPowerFactorExcitationMode((PfExcitationMode)u);
   else if (fn == "setDatetime") {
     group = "setTime";
     Datetime dt;

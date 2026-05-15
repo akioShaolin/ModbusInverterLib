@@ -35,8 +35,6 @@ InverterTime.cpp
 
 #include "Inverter.h"
 
-Datetime datetime;
-
 // ======================================================
 // Date/Time Read
 // ======================================================
@@ -75,10 +73,11 @@ bool Inverter::getYear(uint16_t& year) {
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
+        Datetime dtTmp;
         if (!readField(_map.time_epoch, &epoch)) return false;
 
-        datetime = epochToDatetime(epoch);
-        year = datetime.year;
+        dtTmp = epochToDatetime(epoch);
+        year = dtTmp.year;
         return true;
     }
     return false;
@@ -103,10 +102,11 @@ bool Inverter::getMonth(uint16_t& month) {
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
+        Datetime dtTmp;
         if (!readField(_map.time_epoch, &epoch)) return false;
 
-        datetime = epochToDatetime(epoch);
-        month = datetime.month;
+        dtTmp = epochToDatetime(epoch);
+        month = dtTmp.month;
         return true;
     }
     return false;
@@ -131,10 +131,11 @@ bool Inverter::getDay(uint16_t& day) {
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
+        Datetime dtTmp;
         if (!readField(_map.time_epoch, &epoch)) return false;
 
-        datetime = epochToDatetime(epoch);
-        day = datetime.day;
+        dtTmp = epochToDatetime(epoch);
+        day = dtTmp.day;
         return true;
     }
     return false;
@@ -159,10 +160,11 @@ bool Inverter::getHour(uint16_t& hour) {
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
+        Datetime dtTmp;
         if (!readField(_map.time_epoch, &epoch)) return false;
 
-        datetime = epochToDatetime(epoch);
-        hour = datetime.hour;
+        dtTmp = epochToDatetime(epoch);
+        hour = dtTmp.hour;
         return true;
     }
     return false;
@@ -187,10 +189,11 @@ bool Inverter::getMinute(uint16_t& minute) {
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
+        Datetime dtTmp;
         if (!readField(_map.time_epoch, &epoch)) return false;
 
-        datetime = epochToDatetime(epoch);
-        minute = datetime.minute;
+        dtTmp = epochToDatetime(epoch);
+        minute = dtTmp.minute;
         return true;
     }
     return false;
@@ -215,10 +218,11 @@ bool Inverter::getSecond(uint16_t& second) {
 
     if (_map.time_epoch.readable) {
         uint32_t epoch;
+        Datetime dtTmp;
         if (!readField(_map.time_epoch, &epoch)) return false;
 
-        datetime = epochToDatetime(epoch);
-        second = datetime.second;
+        dtTmp = epochToDatetime(epoch);
+        second = dtTmp.second;
         return true;
     }
     return false;

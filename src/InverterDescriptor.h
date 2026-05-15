@@ -21,7 +21,7 @@ struct ModbusConfigData {
     uint8_t id;
     uint32_t baud;
     SerialConfig serialConfig;
-    uint8_t deRePin = -1;
+    int8_t deRePin = -1;
 };
 
 enum InverterPhaseType {

@@ -88,6 +88,7 @@ bool Inverter::begin() {
 }
 
 void Inverter::setSlaveId(uint8_t id) {
+    _cfg.id = id;
     _modbus.setId(id);
 }
 

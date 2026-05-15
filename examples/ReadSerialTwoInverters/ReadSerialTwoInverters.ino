@@ -14,7 +14,7 @@
 #include <ModbusRTU.h>
 #include <InverterModbusLib.h>
 
-#define DE_RE_PIN 12  // Defina o pino DE_RE
+int8_t deRePin = -1;  // Defina o pino DE_RE
 
 const char* AP_SSID = "ESP07-Inverter";
 const char* AP_PASS = "12345678";
@@ -29,8 +29,8 @@ ModbusRTU mb;
 // Caso use barramentos separados, cada inversor pode ter seu próprio ModbusRTU,
 // HardwareSerial e pino DE/RE.
 
-ModbusConfigData mbCfg400G = {2, 9600, SERIAL_8N1, DE_RE_PIN};
-ModbusConfigData mbCfg500H = {1, 9600, SERIAL_8N1, DE_RE_PIN};
+ModbusConfigData mbCfg400G = {2, 9600, SERIAL_8N1, deRePin};
+ModbusConfigData mbCfg500H = {1, 9600, SERIAL_8N1, deRePin};
 
 // Inversores no mesmo barramento RS485
 Inverter inverter400G(SIW400G_T100_W0);
