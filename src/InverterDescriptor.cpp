@@ -22,7 +22,7 @@ constexpr ExportLimitMode defaultExportLimitMode PROGMEM = {0x01, 0x00};
 constexpr ExportLimitMode fx_RVH3ExportLimitMode PROGMEM = {0xAA, 0x55};
 
 constexpr ModbusConfigData defaultModbusConfig PROGMEM {1, 9600, SERIAL_8N1};
-constexpr ModbusConfigData gwModbusConfig PROGMEM {1, 9600, SERIAL_8N2};
+constexpr ModbusConfigData gwModbusConfig PROGMEM {1, 9600, SERIAL_8N1};
 
 constexpr BatteryInfo noBattery PROGMEM = {0, 0, {0}};
 

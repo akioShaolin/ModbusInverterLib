@@ -383,7 +383,6 @@ void handleApiGet() {
   bool ok = false;
 
   if (fn == "getSerialNumber") { String v; ok = inverter->getSerialNumber(v); result = ok ? escapeHtml(v) : "Falha"; }
-  else if (fn == "getDatetime") { Datetime v; ok = inverter->getDatetime(v); result = ok ? datetimeText(v) : "Falha"; }
   else if (fn == "getYear") { uint16_t v; ok = inverter->getYear(v); result = ok ? String(v) : "Falha"; }
   else if (fn == "getMonth") { uint16_t v; ok = inverter->getMonth(v); result = ok ? String(v) : "Falha"; }
   else if (fn == "getDay") { uint16_t v; ok = inverter->getDay(v); result = ok ? String(v) : "Falha"; }
@@ -436,7 +435,6 @@ void handleApiSet() {
     dt.hour = server.arg("hour").toInt();
     dt.minute = server.arg("minute").toInt();
     dt.second = server.arg("second").toInt();
-    ok = inverter->setDatetime(dt);
   }
   else if (fn == "setYear") { group = "setTime"; ok = inverter->setYear((uint16_t)u); }
   else if (fn == "setMonth") { group = "setTime"; ok = inverter->setMonth((uint16_t)u); }

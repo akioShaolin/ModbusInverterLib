@@ -124,7 +124,7 @@ static const ModbusInverterMap map_SIW200H PROGMEM = {
 };
 
 static const ModbusInverterMap map_SIW200G PROGMEM = {
-        // Identificação
+        // Identificação    // Supostamente o REG 0x2734
     { 0x9C74, ASCII, 16, 1, 1.0f, true, false }, // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
     // Controle
     { 0xA716, U16, 1, 1, 1.0f, true, true },     // Boot. CE - Shutdown, CF - Boot
@@ -453,7 +453,60 @@ static const ModbusInverterMap map_SIW400H_W10 PROGMEM = {
     { 0xB1BE, U32, 1, 2, 0.01f, true, false }     // EPS Active Power (W) (não disponível nesse modelo)
 };
 
-static const ModbusInverterMap map_SIW420G PROGMEM = {};
+static const ModbusInverterMap map_SIW420G PROGMEM = {
+    // Identificação
+    { 0x000A, ASCII, 10, 1, 1.0f, true, false },   // Serial. Scale é ignorado para ASCII; usar 1.0f apenas como valor neutro
+    // Controle
+    INVALID_FIELD,     // Boot. Write 1
+    INVALID_FIELD,     // Shutdown. Write 1
+    INVALID_FIELD,                                // Enable Power Limit (Não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit (W) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Set Power Limit Percent (%)
+    INVALID_FIELD,     // Enable Export Limit (0-Off, 1-DI, 5-Zero, 6-Power limited, 7-Power limited percent)
+    INVALID_FIELD,   // Set Export Limit (kW)
+    INVALID_FIELD,     // Set Export Limit Percent(%)
+    INVALID_FIELD,      // Enable Power Factor (Não disponível nesse modelo)
+    INVALID_FIELD,    // Set Power Factor
+    INVALID_FIELD,                                // Power Factor Excitation Mode (Não disponível nesse modelo)
+    // Tempo
+    INVALID_FIELD,                                // Time Year (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Month (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Day (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Hour (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Minute (não disponível nesse modelo)
+    INVALID_FIELD,                                // Time Second (não disponível nesse modelo)
+    INVALID_FIELD,     // Time Epoch
+    // Status
+    INVALID_FIELD,    // Total Energy (kWh) - MSB em 0x0222 e LSB em 0x0223 
+    INVALID_FIELD,   // Daily Energy (kWh)  
+
+    INVALID_FIELD,   // Active Power (W)
+    INVALID_FIELD,                                // Apparent Power (kVA) (não disponível nesse modelo)
+    INVALID_FIELD,   // Reactive Power (kVAr)
+    INVALID_FIELD,   // Power Factor
+
+    INVALID_FIELD,     // Grid Voltage R, S, T (V)
+    INVALID_FIELD,   // Grid Current R, S, T (A)
+    INVALID_FIELD,    // Frequency (Hz)
+
+    INVALID_FIELD,     // Temperature (°C)
+    INVALID_FIELD,   // Insulation Resistance (kΩ)
+    INVALID_FIELD,     // Inverter Status
+    { 0x7D08, U16, 5, 1, 1.0f, true, false },     // Alarm
+
+    INVALID_FIELD,    // String Voltage (V)
+    INVALID_FIELD,    // String Current (A)
+    INVALID_FIELD,                                // String Power (W) (não disponível nesse modelo)
+                             
+    INVALID_FIELD,                                // Battery Voltage (V)                
+    INVALID_FIELD,                                // Battery Current (A) (não disponível nesse modelo)
+    INVALID_FIELD,                                // Battery Power (W)
+    INVALID_FIELD,                                // Battery SoC (%)
+    INVALID_FIELD,                                // Battery SoH (%) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Voltage R, S, T (V) (não disponível nesse modelo)
+    INVALID_FIELD,                                // EPS Current R, S, T (A) (não disponível nesse modelo)
+    INVALID_FIELD                                 // EPS Active Power (W) (não disponível nesse modelo)
+};
 
 static const ModbusInverterMap map_SIW500G PROGMEM = {
     // Identificação
